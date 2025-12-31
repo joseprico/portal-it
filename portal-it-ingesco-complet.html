@@ -32,16 +32,8 @@
             --purple-100: #EDE9FE;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--gray-100);
@@ -58,7 +50,6 @@
             z-index: 100;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
-
         .header-content {
             max-width: 1200px;
             margin: 0 auto;
@@ -66,597 +57,321 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             gap: 16px;
         }
-
+        .logo { display: flex; align-items: center; gap: 12px; }
         .logo-icon {
-            width: 48px;
-            height: 48px;
+            width: 40px; height: 40px;
             background: var(--ingesco-red);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 18px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 18px;
         }
-
-        .logo-text h1 {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .logo-text span {
-            font-size: 13px;
-            opacity: 0.8;
-        }
-
-        /* Navigation */
-        .nav-links {
-            display: flex;
-            gap: 8px;
-        }
-
+        .logo-text h1 { font-size: 20px; font-weight: 700; }
+        .logo-text span { font-size: 12px; opacity: 0.8; }
+        .nav-links { display: flex; gap: 24px; flex-wrap: wrap; }
         .nav-links a {
             color: var(--white);
             text-decoration: none;
-            padding: 10px 16px;
-            border-radius: 10px;
             font-size: 14px;
             font-weight: 500;
-            transition: background 0.2s;
+            opacity: 0.9;
+            transition: opacity 0.2s;
         }
+        .nav-links a:hover { opacity: 1; }
 
-        .nav-links a:hover {
-            background: rgba(255,255,255,0.15);
-        }
-
-        /* Hero Section */
+        /* Hero */
         .hero {
             background: linear-gradient(135deg, var(--ingesco-red) 0%, var(--ingesco-red-dark) 100%);
             color: var(--white);
             padding: 60px 24px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
         }
-
-        .hero::before {
-            content: '⚡';
-            position: absolute;
-            top: 20px;
-            right: 10%;
-            font-size: 150px;
-            opacity: 0.1;
-        }
-
-        .hero h2 {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 12px;
-        }
-
+        .hero h2 { font-size: 36px; font-weight: 800; margin-bottom: 16px; }
         .hero p {
             font-size: 18px;
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto 32px;
         }
-
-        .hero-buttons {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
+        .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 16px 28px;
+            gap: 8px;
+            padding: 14px 28px;
             border-radius: 12px;
-            font-size: 15px;
             font-weight: 600;
+            font-size: 16px;
             text-decoration: none;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: none;
+            transition: all 0.2s;
         }
-
-        .btn-white {
+        .btn-primary {
             background: var(--white);
             color: var(--ingesco-red);
         }
-
-        .btn-white:hover {
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
-
-        .btn-outline {
-            background: transparent;
+        .btn-secondary {
+            background: rgba(255,255,255,0.15);
             color: var(--white);
-            border: 2px solid rgba(255,255,255,0.5);
+            border: 2px solid rgba(255,255,255,0.3);
         }
+        .btn-secondary:hover { background: rgba(255,255,255,0.25); }
 
-        .btn-outline:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: var(--white);
-        }
-
-        /* Main Container */
-        .main-container {
+        /* Main */
+        .main {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 24px;
+            padding: 48px 24px;
         }
-
-        /* Section Title */
-        .section-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .section-header h2 {
+        .section { margin-bottom: 48px; }
+        .section-title {
             font-size: 28px;
             font-weight: 700;
             color: var(--gray-800);
             margin-bottom: 8px;
         }
+        .section-subtitle { color: var(--gray-500); margin-bottom: 24px; }
 
-        .section-header p {
-            color: var(--gray-500);
-            font-size: 16px;
-        }
-
-        /* Quick Actions Grid */
+        /* Quick Actions */
         .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 16px;
-            margin-bottom: 60px;
         }
-
         .quick-action {
             background: var(--white);
             border-radius: 16px;
-            padding: 24px;
+            padding: 24px 16px;
             text-align: center;
             text-decoration: none;
-            color: inherit;
-            border: 1px solid var(--gray-200);
-            transition: all 0.3s;
+            color: var(--gray-800);
+            transition: all 0.2s;
+            border: 2px solid transparent;
         }
-
         .quick-action:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
             border-color: var(--ingesco-red);
         }
-
-        .quick-action-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin: 0 auto 14px;
+        .quick-action-icon { font-size: 32px; margin-bottom: 12px; }
+        .quick-action h3 { font-size: 14px; font-weight: 600; }
+        .quick-action.highlight {
+            background: linear-gradient(135deg, var(--ingesco-red) 0%, var(--ingesco-red-dark) 100%);
+            color: var(--white);
+        }
+        .quick-action.highlight:hover {
+            border-color: var(--ingesco-blue);
         }
 
-        .quick-action h3 {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--gray-700);
-        }
-
-        /* Guides Section */
-        .guides-section {
-            margin-bottom: 60px;
-        }
-
-        .guide-card {
+        /* Guides */
+        .guides { display: flex; flex-direction: column; gap: 16px; }
+        .guide {
             background: var(--white);
-            border-radius: 20px;
-            border: 1px solid var(--gray-200);
-            margin-bottom: 24px;
+            border-radius: 16px;
             overflow: hidden;
+            border: 1px solid var(--gray-200);
         }
-
         .guide-header {
-            padding: 24px 28px;
+            padding: 20px 24px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            justify-content: space-between;
             cursor: pointer;
             transition: background 0.2s;
         }
-
-        .guide-header:hover {
-            background: var(--gray-50);
-        }
-
+        .guide-header:hover { background: var(--gray-50); }
+        .guide-title { display: flex; align-items: center; gap: 16px; }
         .guide-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            flex-shrink: 0;
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
         }
-
-        .guide-title {
-            flex: 1;
-        }
-
-        .guide-title h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--gray-800);
-            margin-bottom: 4px;
-        }
-
-        .guide-title p {
-            font-size: 14px;
-            color: var(--gray-500);
-        }
-
+        .guide-icon.password { background: var(--ingesco-red-light); }
+        .guide-icon.outlook { background: var(--blue-100); }
+        .guide-icon.vpn { background: var(--green-100); }
+        .guide-icon.teams { background: var(--purple-100); }
+        .guide-icon.sharepoint { background: var(--orange-100); }
+        .guide-title h3 { font-size: 18px; font-weight: 600; }
+        .guide-title p { font-size: 14px; color: var(--gray-500); }
         .guide-toggle {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: var(--gray-100);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
+            font-size: 20px;
             color: var(--gray-400);
-            transition: all 0.3s;
+            transition: transform 0.3s;
         }
-
-        .guide-card.open .guide-toggle {
-            transform: rotate(180deg);
-            background: var(--ingesco-red);
-            color: var(--white);
-        }
-
+        .guide.active .guide-toggle { transform: rotate(180deg); }
         .guide-content {
-            display: none;
-            padding: 0 28px 28px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .guide.active .guide-content { max-height: 2000px; }
+        .guide-body {
+            padding: 0 24px 24px;
             border-top: 1px solid var(--gray-200);
         }
-
-        .guide-card.open .guide-content {
-            display: block;
-        }
-
-        .guide-content h4 {
-            font-size: 15px;
+        .guide-body h4 {
+            font-size: 16px;
             font-weight: 600;
-            color: var(--gray-700);
-            margin: 24px 0 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            color: var(--ingesco-blue);
+            margin: 20px 0 12px;
         }
-
-        .guide-content h4:first-child {
-            margin-top: 20px;
-        }
-
-        .step-list {
-            list-style: none;
-            counter-reset: step;
-        }
-
-        .step-list li {
-            counter-increment: step;
-            padding: 12px 0 12px 48px;
-            position: relative;
-            border-bottom: 1px solid var(--gray-100);
-            font-size: 14px;
-            color: var(--gray-600);
-        }
-
-        .step-list li:last-child {
-            border-bottom: none;
-        }
-
-        .step-list li::before {
-            content: counter(step);
-            position: absolute;
-            left: 0;
-            top: 10px;
-            width: 28px;
-            height: 28px;
-            background: var(--ingesco-red-light);
-            color: var(--ingesco-red);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .tip-box {
+        .guide-body ol, .guide-body ul { margin-left: 20px; }
+        .guide-body li { margin-bottom: 8px; color: var(--gray-700); }
+        .guide-tip {
             background: var(--blue-100);
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-top: 20px;
-            display: flex;
-            gap: 12px;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 16px;
             font-size: 14px;
-            color: var(--gray-700);
+            color: var(--blue-500);
         }
-
-        .tip-box.warning {
+        .guide-warning {
             background: var(--orange-100);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 16px;
+            font-size: 14px;
+            color: var(--orange-500);
         }
 
-        .tip-box.success {
-            background: var(--green-100);
-        }
-
-        .tip-icon {
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        /* Products Section */
-        .products-section {
-            margin-bottom: 60px;
-        }
-
-        .products-grid {
+        /* Products */
+        .products {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
-
-        .product-card {
+        .product {
             background: var(--white);
             border-radius: 16px;
-            padding: 28px;
-            border: 1px solid var(--gray-200);
+            padding: 24px;
             text-decoration: none;
-            color: inherit;
-            transition: all 0.3s;
-            display: block;
+            color: var(--gray-800);
+            transition: all 0.2s;
+            border: 1px solid var(--gray-200);
         }
-
-        .product-card:hover {
+        .product:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
             border-color: var(--ingesco-red);
         }
-
-        .product-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, var(--ingesco-red) 0%, var(--ingesco-red-dark) 100%);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin-bottom: 20px;
-        }
-
-        .product-card h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--gray-800);
-            margin-bottom: 8px;
-        }
-
-        .product-card p {
-            font-size: 14px;
-            color: var(--gray-500);
-            margin-bottom: 16px;
-        }
-
+        .product-icon { font-size: 32px; margin-bottom: 16px; }
+        .product h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .product p { font-size: 14px; color: var(--gray-500); margin-bottom: 16px; }
         .product-link {
-            color: var(--ingesco-red);
             font-size: 14px;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            color: var(--ingesco-red);
         }
 
-        /* Chatbot Section */
-        .chatbot-section {
-            background: linear-gradient(135deg, #5B5BD6 0%, #6366F1 100%);
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--ingesco-blue) 0%, var(--ingesco-blue-light) 100%);
             border-radius: 24px;
             padding: 48px;
             text-align: center;
             color: var(--white);
-            margin-bottom: 60px;
-            position: relative;
-            overflow: hidden;
         }
-
-        .chatbot-section::before {
-            content: '';
-            position: absolute;
-            top: -100px;
-            right: -100px;
-            width: 300px;
-            height: 300px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50%;
+        .cta-section img {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            margin-bottom: 24px;
         }
-
-        .chatbot-avatar {
-            width: 120px;
-            height: 120px;
-            background: var(--white);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            padding: 10px;
-        }
-
-        .chatbot-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .chatbot-section h2 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .chatbot-section p {
+        .cta-section h2 { font-size: 28px; margin-bottom: 16px; }
+        .cta-section p {
             font-size: 16px;
             opacity: 0.9;
             max-width: 500px;
-            margin: 0 auto 28px;
+            margin: 0 auto 24px;
         }
-
-        .chatbot-btn {
+        .cta-btn {
             display: inline-flex;
             align-items: center;
             gap: 12px;
-            background: var(--white);
-            color: #6366F1;
-            padding: 18px 36px;
-            border-radius: 14px;
-            font-size: 17px;
+            background: var(--ingesco-red);
+            color: var(--white);
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 18px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.3s;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.2s;
         }
-
-        .chatbot-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
-            background: #F8F8FF;
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
-
-        .chatbot-features {
+        .cta-features {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
             gap: 12px;
-            margin-top: 28px;
+            justify-content: center;
+            margin-top: 24px;
         }
-
-        .chatbot-feature {
+        .cta-feature {
             background: rgba(255,255,255,0.15);
-            padding: 10px 18px;
-            border-radius: 25px;
-            font-size: 13px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
         }
 
         /* Footer */
         .footer {
             background: var(--gray-800);
             color: var(--white);
-            padding: 40px 24px;
+            padding: 32px 24px;
             text-align: center;
         }
-
         .footer-links {
             display: flex;
-            justify-content: center;
             gap: 24px;
-            margin-bottom: 20px;
+            justify-content: center;
             flex-wrap: wrap;
+            margin-bottom: 16px;
         }
-
         .footer-links a {
-            color: var(--gray-400);
+            color: var(--gray-300);
             text-decoration: none;
             font-size: 14px;
-            transition: color 0.2s;
         }
+        .footer-links a:hover { color: var(--white); }
+        .footer p { font-size: 14px; color: var(--gray-400); }
 
-        .footer-links a:hover {
-            color: var(--white);
-        }
-
-        .footer p {
-            color: var(--gray-500);
-            font-size: 13px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 16px;
-            }
-
-            .nav-links {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .hero h2 {
-                font-size: 28px;
-            }
-
-            .hero-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .chatbot-section {
-                padding: 32px 24px;
-            }
-
-            .guide-header {
-                padding: 20px;
-            }
-
-            .guide-content {
-                padding: 0 20px 20px;
-            }
-        }
-
-        /* Scroll to top */
-        .scroll-top {
+        /* Back to top */
+        .back-to-top {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
+            bottom: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
             background: var(--ingesco-red);
             color: var(--white);
-            border: none;
-            border-radius: 14px;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(227, 30, 36, 0.4);
-            transition: all 0.3s;
-            display: none;
-        }
-
-        .scroll-top:hover {
-            transform: translateY(-3px);
-        }
-
-        .scroll-top.visible {
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-decoration: none;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .hero h2 { font-size: 28px; }
+            .hero p { font-size: 16px; }
+            .section-title { font-size: 24px; }
+            .cta-section { padding: 32px 24px; }
+            .cta-section h2 { font-size: 24px; }
         }
     </style>
 </head>
@@ -664,7 +379,7 @@
     <!-- Header -->
     <header class="header">
         <div class="header-content">
-            <div class="logo-section">
+            <div class="logo">
                 <div class="logo-icon">IT</div>
                 <div class="logo-text">
                     <h1>Portal IT INGESCO</h1>
@@ -675,346 +390,312 @@
                 <a href="#guies">📚 Guies</a>
                 <a href="#productes">⚡ Productes</a>
                 <a href="#ia">🧠 IA INGESCO</a>
-                <a href="https://m365.cloud.microsoft/chat/?titleId=T_8f1bfb77-65c8-98be-70af-eff3712e635b&source=embedded-builder&auth=2" target="_blank">💬 Xat</a>
+                <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=O18QWqHwwEuTMopJiTIcyUs0CIBagtBDjhAS2DLf-IRUMVQ0UUFKQzhSTkpNUFlJTkNQMFA2RDdVQS4u" target="_blank">🎫 Crear Ticket</a>
             </nav>
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section class="hero">
         <h2>Benvingut al Portal IT</h2>
         <p>Troba ajuda ràpida per a qualsevol problema informàtic o consulta tècnica sobre els nostres productes de protecció contra el llamp.</p>
         <div class="hero-buttons">
-            <a href="https://m365.cloud.microsoft/chat/?titleId=T_8f1bfb77-65c8-98be-70af-eff3712e635b&source=embedded-builder&auth=2" target="_blank" class="btn btn-white">
-                🧠 Parlar amb la IA d'INGESCO
-            </a>
-            <a href="#guies" class="btn btn-outline">
-                📚 Veure Guies
-            </a>
+            <a href="https://chatgpt.com/g/g-695504e3176081919dba33057f4f3a37-ingesco-ia" target="_blank" class="btn btn-primary">🧠 Parlar amb la IA d'INGESCO</a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=O18QWqHwwEuTMopJiTIcyUs0CIBagtBDjhAS2DLf-IRUMVQ0UUFKQzhSTkpNUFlJTkNQMFA2RDdVQS4u" target="_blank" class="btn btn-secondary">🎫 Crear Ticket IT</a>
         </div>
     </section>
 
     <!-- Main Content -->
-    <main class="main-container">
+    <main class="main">
         <!-- Quick Actions -->
-        <section>
-            <div class="section-header">
-                <h2>Accions Ràpides</h2>
-                <p>El que necessites amb un sol clic</p>
-            </div>
+        <section class="section">
+            <h2 class="section-title">Accions Ràpides</h2>
+            <p class="section-subtitle">El que necessites amb un sol clic</p>
             <div class="quick-actions">
                 <a href="#contrasenya" class="quick-action">
-                    <div class="quick-action-icon" style="background: var(--ingesco-red-light);">🔐</div>
+                    <div class="quick-action-icon">🔐</div>
                     <h3>Canviar Contrasenya</h3>
                 </a>
                 <a href="#outlook" class="quick-action">
-                    <div class="quick-action-icon" style="background: var(--blue-100);">📧</div>
+                    <div class="quick-action-icon">📧</div>
                     <h3>Outlook</h3>
                 </a>
                 <a href="#vpn" class="quick-action">
-                    <div class="quick-action-icon" style="background: var(--green-100);">🔒</div>
+                    <div class="quick-action-icon">🔒</div>
                     <h3>VPN</h3>
                 </a>
                 <a href="#teams" class="quick-action">
-                    <div class="quick-action-icon" style="background: var(--purple-100);">💬</div>
+                    <div class="quick-action-icon">💬</div>
                     <h3>Teams</h3>
                 </a>
                 <a href="#sharepoint" class="quick-action">
-                    <div class="quick-action-icon" style="background: var(--orange-100);">📁</div>
+                    <div class="quick-action-icon">📁</div>
                     <h3>SharePoint</h3>
                 </a>
-                <a href="https://m365.cloud.microsoft/chat/?titleId=T_8f1bfb77-65c8-98be-70af-eff3712e635b&source=embedded-builder&auth=2" target="_blank" class="quick-action">
-                    <div class="quick-action-icon" style="background: #EDE9FE;">🧠</div>
+                <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=O18QWqHwwEuTMopJiTIcyUs0CIBagtBDjhAS2DLf-IRUMVQ0UUFKQzhSTkpNUFlJTkNQMFA2RDdVQS4u" target="_blank" class="quick-action highlight">
+                    <div class="quick-action-icon">🎫</div>
+                    <h3>Crear Ticket IT</h3>
+                </a>
+                <a href="https://chatgpt.com/g/g-695504e3176081919dba33057f4f3a37-ingesco-ia" target="_blank" class="quick-action highlight">
+                    <div class="quick-action-icon">🧠</div>
                     <h3>IA INGESCO</h3>
                 </a>
             </div>
         </section>
 
-        <!-- Guides Section -->
-        <section class="guides-section" id="guies">
-            <div class="section-header">
-                <h2>Guies i Tutorials</h2>
-                <p>Pas a pas per resoldre els problemes més comuns</p>
-            </div>
-
-            <!-- Contrasenya -->
-            <div class="guide-card" id="contrasenya">
-                <div class="guide-header" onclick="toggleGuide(this)">
-                    <div class="guide-icon" style="background: var(--ingesco-red-light);">🔐</div>
-                    <div class="guide-title">
-                        <h3>Com canviar la contrasenya</h3>
-                        <p>Canvia o restableix la teva contrasenya de Microsoft 365</p>
+        <!-- Guides -->
+        <section class="section" id="guies">
+            <h2 class="section-title">Guies i Tutorials</h2>
+            <p class="section-subtitle">Pas a pas per resoldre els problemes més comuns</p>
+            <div class="guides">
+                <!-- Password Guide -->
+                <div class="guide" id="contrasenya">
+                    <div class="guide-header" onclick="this.parentElement.classList.toggle('active')">
+                        <div class="guide-title">
+                            <div class="guide-icon password">🔐</div>
+                            <div>
+                                <h3>Com canviar la contrasenya</h3>
+                                <p>Canvia o restableix la teva contrasenya de Microsoft 365</p>
+                            </div>
+                        </div>
+                        <span class="guide-toggle">▼</span>
                     </div>
-                    <div class="guide-toggle">▼</div>
-                </div>
-                <div class="guide-content">
-                    <h4>📌 Canviar contrasenya (si la recordes)</h4>
-                    <ol class="step-list">
-                        <li>Ves a <strong>portal.office.com</strong> i inicia sessió</li>
-                        <li>Clica a la teva foto/icona a dalt a la dreta</li>
-                        <li>Selecciona <strong>"Veure compte"</strong> o <strong>"My Account"</strong></li>
-                        <li>Ves a <strong>"Seguretat i privacitat"</strong> → <strong>"Contrasenya"</strong></li>
-                        <li>Introdueix la contrasenya actual i la nova (mínim 8 caràcters, majúscules, minúscules i números)</li>
-                        <li>Clica <strong>"Enviar"</strong></li>
-                    </ol>
-
-                    <h4>📌 Restablir contrasenya (si l'has oblidat)</h4>
-                    <ol class="step-list">
-                        <li>Ves a <strong>portal.office.com</strong></li>
-                        <li>Clica <strong>"No puc accedir al meu compte"</strong> o <strong>"Forgot password"</strong></li>
-                        <li>Introdueix el teu correu d'empresa</li>
-                        <li>Completa la verificació (SMS o correu alternatiu)</li>
-                        <li>Crea una nova contrasenya</li>
-                    </ol>
-
-                    <div class="tip-box warning">
-                        <span class="tip-icon">⚠️</span>
-                        <div><strong>Important:</strong> Si no tens configurat el mètode de recuperació, contacta amb IT per restablir la contrasenya manualment.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Outlook -->
-            <div class="guide-card" id="outlook">
-                <div class="guide-header" onclick="toggleGuide(this)">
-                    <div class="guide-icon" style="background: var(--blue-100);">📧</div>
-                    <div class="guide-title">
-                        <h3>Com funciona l'Outlook</h3>
-                        <p>Configuració i ús del correu electrònic</p>
-                    </div>
-                    <div class="guide-toggle">▼</div>
-                </div>
-                <div class="guide-content">
-                    <h4>📌 Accedir al correu</h4>
-                    <ol class="step-list">
-                        <li><strong>Web:</strong> Ves a <strong>outlook.office.com</strong> i inicia sessió amb el teu correu d'empresa</li>
-                        <li><strong>Escriptori:</strong> Obre l'aplicació Outlook al teu ordinador</li>
-                        <li><strong>Mòbil:</strong> Descarrega l'app "Microsoft Outlook" i afegeix el teu compte</li>
-                    </ol>
-
-                    <h4>📌 Configurar signatura</h4>
-                    <ol class="step-list">
-                        <li>A Outlook, ves a <strong>Configuració</strong> (icona ⚙️)</li>
-                        <li>Busca <strong>"Correu"</strong> → <strong>"Redactar i respondre"</strong></li>
-                        <li>A "Signatura de correu", escriu la teva signatura</li>
-                        <li>Activa <strong>"Inclou automàticament la signatura"</strong></li>
-                        <li>Clica <strong>"Desar"</strong></li>
-                    </ol>
-
-                    <h4>📌 Crear regles de correu</h4>
-                    <ol class="step-list">
-                        <li>Fes clic dret sobre un correu que vulguis filtrar</li>
-                        <li>Selecciona <strong>"Regles"</strong> → <strong>"Crear regla"</strong></li>
-                        <li>Defineix les condicions (remitent, assumpte, etc.)</li>
-                        <li>Tria l'acció (moure a carpeta, marcar, eliminar...)</li>
-                        <li>Guarda la regla</li>
-                    </ol>
-
-                    <h4>📌 Calendari compartit</h4>
-                    <ol class="step-list">
-                        <li>Ves a la secció <strong>Calendari</strong> d'Outlook</li>
-                        <li>Clica dret sobre el teu calendari → <strong>"Compartir"</strong></li>
-                        <li>Introdueix el correu del company</li>
-                        <li>Selecciona el nivell de permisos</li>
-                        <li>Envia la invitació</li>
-                    </ol>
-
-                    <div class="tip-box">
-                        <span class="tip-icon">💡</span>
-                        <div><strong>Consell:</strong> Usa categories de colors per organitzar els correus per projecte o prioritat.</div>
+                    <div class="guide-content">
+                        <div class="guide-body">
+                            <h4>📌 Canviar contrasenya (si la recordes)</h4>
+                            <ol>
+                                <li>Ves a <strong>portal.office.com</strong> i inicia sessió</li>
+                                <li>Clica a la teva foto/icona a dalt a la dreta</li>
+                                <li>Selecciona <strong>"Veure compte"</strong> o <strong>"My Account"</strong></li>
+                                <li>Ves a <strong>"Seguretat i privacitat"</strong> → <strong>"Contrasenya"</strong></li>
+                                <li>Introdueix la contrasenya actual i la nova (mínim 8 caràcters, majúscules, minúscules i números)</li>
+                                <li>Clica <strong>"Enviar"</strong></li>
+                            </ol>
+                            <h4>📌 Restablir contrasenya (si l'has oblidat)</h4>
+                            <ol>
+                                <li>Ves a <strong>portal.office.com</strong></li>
+                                <li>Clica <strong>"No puc accedir al meu compte"</strong> o <strong>"Forgot password"</strong></li>
+                                <li>Introdueix el teu correu d'empresa</li>
+                                <li>Completa la verificació (SMS o correu alternatiu)</li>
+                                <li>Crea una nova contrasenya</li>
+                            </ol>
+                            <div class="guide-warning">
+                                ⚠️ <strong>Important:</strong> Si no tens configurat el mètode de recuperació, contacta amb IT per restablir la contrasenya manualment.
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- VPN -->
-            <div class="guide-card" id="vpn">
-                <div class="guide-header" onclick="toggleGuide(this)">
-                    <div class="guide-icon" style="background: var(--green-100);">🔒</div>
-                    <div class="guide-title">
-                        <h3>Com connectar-se a la VPN</h3>
-                        <p>Accés remot segur a la xarxa de l'empresa</p>
+                <!-- Outlook Guide -->
+                <div class="guide" id="outlook">
+                    <div class="guide-header" onclick="this.parentElement.classList.toggle('active')">
+                        <div class="guide-title">
+                            <div class="guide-icon outlook">📧</div>
+                            <div>
+                                <h3>Com funciona l'Outlook</h3>
+                                <p>Configuració i ús del correu electrònic</p>
+                            </div>
+                        </div>
+                        <span class="guide-toggle">▼</span>
                     </div>
-                    <div class="guide-toggle">▼</div>
-                </div>
-                <div class="guide-content">
-                    <h4>📌 Què és la VPN?</h4>
-                    <p style="color: var(--gray-600); margin-bottom: 16px;">La VPN (Virtual Private Network) et permet accedir als recursos de l'empresa (carpetes de xarxa, aplicacions internes, impressores) com si estiguessis a l'oficina, però des de casa o qualsevol lloc.</p>
-
-                    <h4>📌 Connectar-se a la VPN</h4>
-                    <ol class="step-list">
-                        <li>Assegura't de tenir instal·lat el client VPN (FortiClient, Cisco AnyConnect o similar)</li>
-                        <li>Obre l'aplicació VPN</li>
-                        <li>Selecciona la connexió <strong>"INGESCO VPN"</strong> o similar</li>
-                        <li>Introdueix el teu <strong>usuari</strong> (el mateix que el correu, sense @ingesco.com)</li>
-                        <li>Introdueix la teva <strong>contrasenya</strong></li>
-                        <li>Si tens autenticació de dos factors, introdueix el codi</li>
-                        <li>Clica <strong>"Connectar"</strong></li>
-                    </ol>
-
-                    <h4>📌 Problemes habituals</h4>
-                    <ol class="step-list">
-                        <li><strong>"No es pot connectar":</strong> Comprova la connexió a internet i reinicia el router</li>
-                        <li><strong>"Usuari o contrasenya incorrectes":</strong> Recorda que potser has canviat la contrasenya recentment</li>
-                        <li><strong>"Connexió molt lenta":</strong> La VPN pot reduir la velocitat; és normal</li>
-                        <li><strong>"Es desconnecta sola":</strong> Comprova que l'ordinador no entri en mode estalvi d'energia</li>
-                    </ol>
-
-                    <div class="tip-box warning">
-                        <span class="tip-icon">⚠️</span>
-                        <div><strong>Important:</strong> Desconnecta la VPN quan acabis de treballar per alliberar recursos i millorar la velocitat de navegació.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Teams -->
-            <div class="guide-card" id="teams">
-                <div class="guide-header" onclick="toggleGuide(this)">
-                    <div class="guide-icon" style="background: var(--purple-100);">💬</div>
-                    <div class="guide-title">
-                        <h3>Com funciona Microsoft Teams</h3>
-                        <p>Xat, reunions i col·laboració en equip</p>
-                    </div>
-                    <div class="guide-toggle">▼</div>
-                </div>
-                <div class="guide-content">
-                    <h4>📌 Accedir a Teams</h4>
-                    <ol class="step-list">
-                        <li><strong>Web:</strong> Ves a <strong>teams.microsoft.com</strong></li>
-                        <li><strong>Escriptori:</strong> Obre l'aplicació Microsoft Teams</li>
-                        <li><strong>Mòbil:</strong> Descarrega l'app "Microsoft Teams"</li>
-                    </ol>
-
-                    <h4>📌 Enviar missatges</h4>
-                    <ol class="step-list">
-                        <li><strong>Xat privat:</strong> Clica "Xat" → "Nou xat" → escriu el nom del company</li>
-                        <li><strong>Canal d'equip:</strong> Ves a "Equips" → selecciona l'equip i canal → escriu al quadre de missatge</li>
-                        <li>Pots usar <strong>@nom</strong> per mencionar algú i que rebi notificació</li>
-                    </ol>
-
-                    <h4>📌 Fer una videotrucada</h4>
-                    <ol class="step-list">
-                        <li>Ves al xat amb la persona o grup</li>
-                        <li>Clica la icona de <strong>càmera</strong> 📹 a dalt a la dreta</li>
-                        <li>O programa una reunió des del <strong>Calendari</strong> de Teams</li>
-                    </ol>
-
-                    <h4>📌 Compartir pantalla en una reunió</h4>
-                    <ol class="step-list">
-                        <li>Durant la reunió, clica la icona <strong>"Compartir"</strong> (rectangle amb fletxa)</li>
-                        <li>Tria: tota la pantalla, una finestra o un PowerPoint</li>
-                        <li>Per deixar de compartir, clica <strong>"Deixar de compartir"</strong></li>
-                    </ol>
-
-                    <h4>📌 Compartir fitxers</h4>
-                    <ol class="step-list">
-                        <li>En un xat o canal, clica la icona de <strong>clip</strong> 📎</li>
-                        <li>Selecciona "Carregar des del meu ordinador" o "OneDrive"</li>
-                        <li>Els fitxers queden guardats a la pestanya "Fitxers" del canal</li>
-                    </ol>
-
-                    <div class="tip-box success">
-                        <span class="tip-icon">✅</span>
-                        <div><strong>Consell:</strong> Usa les reaccions (👍 ❤️ 😂) per respondre ràpidament sense escriure.</div>
+                    <div class="guide-content">
+                        <div class="guide-body">
+                            <h4>📌 Accedir al correu</h4>
+                            <ol>
+                                <li><strong>Web:</strong> Ves a <strong>outlook.office.com</strong> i inicia sessió amb el teu correu d'empresa</li>
+                                <li><strong>Escriptori:</strong> Obre l'aplicació Outlook al teu ordinador</li>
+                                <li><strong>Mòbil:</strong> Descarrega l'app "Microsoft Outlook" i afegeix el teu compte</li>
+                            </ol>
+                            <h4>📌 Configurar signatura</h4>
+                            <ol>
+                                <li>A Outlook, ves a <strong>Configuració</strong> (icona ⚙️)</li>
+                                <li>Busca <strong>"Correu"</strong> → <strong>"Redactar i respondre"</strong></li>
+                                <li>A "Signatura de correu", escriu la teva signatura</li>
+                                <li>Activa <strong>"Inclou automàticament la signatura"</strong></li>
+                                <li>Clica <strong>"Desar"</strong></li>
+                            </ol>
+                            <h4>📌 Crear regles de correu</h4>
+                            <ol>
+                                <li>Fes clic dret sobre un correu que vulguis filtrar</li>
+                                <li>Selecciona <strong>"Regles"</strong> → <strong>"Crear regla"</strong></li>
+                                <li>Defineix les condicions (remitent, assumpte, etc.)</li>
+                                <li>Tria l'acció (moure a carpeta, marcar, eliminar...)</li>
+                                <li>Guarda la regla</li>
+                            </ol>
+                            <div class="guide-tip">
+                                💡 <strong>Consell:</strong> Usa categories de colors per organitzar els correus per projecte o prioritat.
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- SharePoint -->
-            <div class="guide-card" id="sharepoint">
-                <div class="guide-header" onclick="toggleGuide(this)">
-                    <div class="guide-icon" style="background: var(--orange-100);">📁</div>
-                    <div class="guide-title">
-                        <h3>Com funciona SharePoint</h3>
-                        <p>Gestió de documents i intranet corporativa</p>
+                <!-- VPN Guide -->
+                <div class="guide" id="vpn">
+                    <div class="guide-header" onclick="this.parentElement.classList.toggle('active')">
+                        <div class="guide-title">
+                            <div class="guide-icon vpn">🔒</div>
+                            <div>
+                                <h3>Com connectar-se a la VPN</h3>
+                                <p>Accés remot segur a la xarxa de l'empresa</p>
+                            </div>
+                        </div>
+                        <span class="guide-toggle">▼</span>
                     </div>
-                    <div class="guide-toggle">▼</div>
+                    <div class="guide-content">
+                        <div class="guide-body">
+                            <h4>📌 Què és la VPN?</h4>
+                            <p>La VPN (Virtual Private Network) et permet accedir als recursos de l'empresa (carpetes de xarxa, aplicacions internes, impressores) com si estiguessis a l'oficina, però des de casa o qualsevol lloc.</p>
+                            <h4>📌 Connectar-se a la VPN</h4>
+                            <ol>
+                                <li>Assegura't de tenir instal·lat el client VPN (FortiClient o similar)</li>
+                                <li>Obre l'aplicació VPN</li>
+                                <li>Selecciona la connexió <strong>"INGESCO VPN"</strong> o similar</li>
+                                <li>Introdueix el teu <strong>usuari</strong> (el mateix que el correu, sense @ingesco.com)</li>
+                                <li>Introdueix la teva <strong>contrasenya</strong></li>
+                                <li>Si tens autenticació de dos factors, introdueix el codi</li>
+                                <li>Clica <strong>"Connectar"</strong></li>
+                            </ol>
+                            <h4>📌 Problemes habituals</h4>
+                            <ul>
+                                <li><strong>"No es pot connectar":</strong> Comprova la connexió a internet i reinicia el router</li>
+                                <li><strong>"Usuari o contrasenya incorrectes":</strong> Recorda que potser has canviat la contrasenya recentment</li>
+                                <li><strong>"Connexió molt lenta":</strong> La VPN pot reduir la velocitat; és normal</li>
+                                <li><strong>"Es desconnecta sola":</strong> Comprova que l'ordinador no entri en mode estalvi d'energia</li>
+                            </ul>
+                            <div class="guide-warning">
+                                ⚠️ <strong>Important:</strong> Desconnecta la VPN quan acabis de treballar per alliberar recursos i millorar la velocitat de navegació.
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="guide-content">
-                    <h4>📌 Què és SharePoint?</h4>
-                    <p style="color: var(--gray-600); margin-bottom: 16px;">SharePoint és l'espai on guardem els documents compartits de l'empresa. És com un disc dur al núvol on tothom pot accedir als fitxers del seu equip o departament.</p>
 
-                    <h4>📌 Accedir a SharePoint</h4>
-                    <ol class="step-list">
-                        <li>Ves a <strong>portal.office.com</strong> i inicia sessió</li>
-                        <li>Clica la icona de <strong>SharePoint</strong> al menú d'aplicacions</li>
-                        <li>O accedeix directament des de Teams → pestanya "Fitxers" d'un equip</li>
-                    </ol>
+                <!-- Teams Guide -->
+                <div class="guide" id="teams">
+                    <div class="guide-header" onclick="this.parentElement.classList.toggle('active')">
+                        <div class="guide-title">
+                            <div class="guide-icon teams">💬</div>
+                            <div>
+                                <h3>Com funciona Microsoft Teams</h3>
+                                <p>Xat, reunions i col·laboració en equip</p>
+                            </div>
+                        </div>
+                        <span class="guide-toggle">▼</span>
+                    </div>
+                    <div class="guide-content">
+                        <div class="guide-body">
+                            <h4>📌 Accedir a Teams</h4>
+                            <ol>
+                                <li><strong>Web:</strong> Ves a <strong>teams.microsoft.com</strong></li>
+                                <li><strong>Escriptori:</strong> Obre l'aplicació Microsoft Teams</li>
+                                <li><strong>Mòbil:</strong> Descarrega l'app "Microsoft Teams"</li>
+                            </ol>
+                            <h4>📌 Enviar missatges</h4>
+                            <ol>
+                                <li><strong>Xat privat:</strong> Clica "Xat" → "Nou xat" → escriu el nom del company</li>
+                                <li><strong>Canal d'equip:</strong> Ves a "Equips" → selecciona l'equip i canal → escriu al quadre de missatge</li>
+                                <li>Pots usar <strong>@nom</strong> per mencionar algú i que rebi notificació</li>
+                            </ol>
+                            <h4>📌 Fer una videotrucada</h4>
+                            <ol>
+                                <li>Ves al xat amb la persona o grup</li>
+                                <li>Clica la icona de <strong>càmera</strong> 📹 a dalt a la dreta</li>
+                                <li>O programa una reunió des del <strong>Calendari</strong> de Teams</li>
+                            </ol>
+                            <h4>📌 Compartir pantalla en una reunió</h4>
+                            <ol>
+                                <li>Durant la reunió, clica la icona <strong>"Compartir"</strong> (rectangle amb fletxa)</li>
+                                <li>Tria: tota la pantalla, una finestra o un PowerPoint</li>
+                                <li>Per deixar de compartir, clica <strong>"Deixar de compartir"</strong></li>
+                            </ol>
+                            <div class="guide-tip">
+                                ✅ <strong>Consell:</strong> Usa les reaccions (👍 ❤️ 😂) per respondre ràpidament sense escriure.
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                    <h4>📌 Pujar documents</h4>
-                    <ol class="step-list">
-                        <li>Ves a la biblioteca de documents del teu equip</li>
-                        <li>Clica <strong>"Carrega"</strong> → <strong>"Fitxers"</strong> o <strong>"Carpeta"</strong></li>
-                        <li>Selecciona els arxius del teu ordinador</li>
-                        <li>Espera que es pugin (veuràs la barra de progrés)</li>
-                    </ol>
-
-                    <h4>📌 Compartir un document</h4>
-                    <ol class="step-list">
-                        <li>Fes clic dret sobre el fitxer → <strong>"Compartir"</strong></li>
-                        <li>Introdueix el correu de la persona</li>
-                        <li>Tria si pot <strong>editar</strong> o només <strong>veure</strong></li>
-                        <li>Clica <strong>"Enviar"</strong> o copia l'enllaç</li>
-                    </ol>
-
-                    <h4>📌 Sincronitzar amb el teu ordinador</h4>
-                    <ol class="step-list">
-                        <li>A SharePoint, clica <strong>"Sincronitza"</strong></li>
-                        <li>S'obrirà OneDrive i sincronitzarà la carpeta</li>
-                        <li>Ara veuràs la carpeta al teu Explorador de Windows</li>
-                        <li>Els canvis es sincronitzen automàticament</li>
-                    </ol>
-
-                    <div class="tip-box">
-                        <span class="tip-icon">💡</span>
-                        <div><strong>Consell:</strong> No moguis ni esborris carpetes sincronitzades sense pensar-ho, afecta a tothom!</div>
+                <!-- SharePoint Guide -->
+                <div class="guide" id="sharepoint">
+                    <div class="guide-header" onclick="this.parentElement.classList.toggle('active')">
+                        <div class="guide-title">
+                            <div class="guide-icon sharepoint">📁</div>
+                            <div>
+                                <h3>Com funciona SharePoint</h3>
+                                <p>Gestió de documents i intranet corporativa</p>
+                            </div>
+                        </div>
+                        <span class="guide-toggle">▼</span>
+                    </div>
+                    <div class="guide-content">
+                        <div class="guide-body">
+                            <h4>📌 Què és SharePoint?</h4>
+                            <p>SharePoint és l'espai on guardem els documents compartits de l'empresa. És com un disc dur al núvol on tothom pot accedir als fitxers del seu equip o departament.</p>
+                            <h4>📌 Accedir a SharePoint</h4>
+                            <ol>
+                                <li>Ves a <strong>portal.office.com</strong> i inicia sessió</li>
+                                <li>Clica la icona de <strong>SharePoint</strong> al menú d'aplicacions</li>
+                                <li>O accedeix directament des de Teams → pestanya "Fitxers" d'un equip</li>
+                            </ol>
+                            <h4>📌 Pujar documents</h4>
+                            <ol>
+                                <li>Ves a la biblioteca de documents del teu equip</li>
+                                <li>Clica <strong>"Carrega"</strong> → <strong>"Fitxers"</strong> o <strong>"Carpeta"</strong></li>
+                                <li>Selecciona els arxius del teu ordinador</li>
+                                <li>Espera que es pugin (veuràs la barra de progrés)</li>
+                            </ol>
+                            <h4>📌 Compartir un document</h4>
+                            <ol>
+                                <li>Fes clic dret sobre el fitxer → <strong>"Compartir"</strong></li>
+                                <li>Introdueix el correu de la persona</li>
+                                <li>Tria si pot <strong>editar</strong> o només <strong>veure</strong></li>
+                                <li>Clica <strong>"Enviar"</strong> o copia l'enllaç</li>
+                            </ol>
+                            <h4>📌 Sincronitzar amb el teu ordinador</h4>
+                            <ol>
+                                <li>A SharePoint, clica <strong>"Sincronitza"</strong></li>
+                                <li>S'obrirà OneDrive i sincronitzarà la carpeta</li>
+                                <li>Ara veuràs la carpeta al teu Explorador de Windows</li>
+                                <li>Els canvis es sincronitzen automàticament</li>
+                            </ol>
+                            <div class="guide-tip">
+                                💡 <strong>Consell:</strong> No moguis ni esborris carpetes sincronitzades sense pensar-ho, afecta a tothom!
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Products Section -->
-        <section class="products-section" id="productes">
-            <div class="section-header">
-                <h2>Productes INGESCO</h2>
-                <p>Catàleg i documentació tècnica</p>
-            </div>
-            <div class="products-grid">
-                <a href="https://www.ingesco.com/es/productos/proteccion-externa-pararrayos" target="_blank" class="product-card">
+        <!-- Products -->
+        <section class="section" id="productes">
+            <h2 class="section-title">Productes INGESCO</h2>
+            <p class="section-subtitle">Catàleg i documentació tècnica</p>
+            <div class="products">
+                <a href="https://www.ingesco.com/es/productos/proteccion-externa-pararrayos" target="_blank" class="product">
                     <div class="product-icon">⚡</div>
                     <h3>Parallamps PDC</h3>
                     <p>Parallamps amb dispositiu de cebat per a protecció externa contra el llamp</p>
                     <span class="product-link">Veure catàleg →</span>
                 </a>
-
-                <a href="https://www.ingesco.com/es/productos/protector-contra-rayos" target="_blank" class="product-card">
+                <a href="https://www.ingesco.com/es/productos/protector-contra-rayos" target="_blank" class="product">
                     <div class="product-icon">🛡️</div>
                     <h3>Protectors de Sobretensions</h3>
                     <p>Protecció interna contra sobretensions transitòries i descàrregues</p>
                     <span class="product-link">Veure catàleg →</span>
                 </a>
-
-                <a href="https://www.ingesco.com/es/productos/previstorm-net" target="_blank" class="product-card">
+                <a href="https://www.ingesco.com/es/productos/previstorm-net" target="_blank" class="product">
                     <div class="product-icon">🌩️</div>
                     <h3>Detectors de Tempestes</h3>
                     <p>Sistemes de prevenció i detecció de tempestes elèctriques</p>
                     <span class="product-link">Veure catàleg →</span>
                 </a>
-
-                <a href="#" class="product-card" onclick="alert('Posa aquí el link a la tarifa de preus')">
-                    <div class="product-icon">💰</div>
-                    <h3>Tarifa de Preus</h3>
-                    <p>Llista de preus actualitzada dels nostres productes</p>
-                    <span class="product-link">Veure tarifa →</span>
-                </a>
-
-                <a href="https://www.ingesco.com/es/catalogo" target="_blank" class="product-card">
+                <a href="https://www.ingesco.com/es/catalogo" target="_blank" class="product">
                     <div class="product-icon">📘</div>
                     <h3>Catàleg Complet</h3>
                     <p>Descarrega el catàleg complet de productes INGESCO en PDF</p>
                     <span class="product-link">Descarregar →</span>
                 </a>
-
-                <a href="https://www.ingesco.com/es/contacto" target="_blank" class="product-card">
+                <a href="https://www.ingesco.com/es/contacto" target="_blank" class="product">
                     <div class="product-icon">📞</div>
                     <h3>Suport Tècnic</h3>
                     <p>Contacta amb el departament tècnic per a consultes especialitzades</p>
@@ -1023,24 +704,22 @@
             </div>
         </section>
 
-        <!-- IA INGESCO Section -->
-        <section class="chatbot-section" id="ia">
-            <div class="chatbot-avatar">
-                <img src="INGESCO_IA.png" alt="INGESCO IA">
-            </div>
-            <h2>Necessites més ajuda?</h2>
-            <p>La Intel·ligència Artificial d'INGESCO pot resoldre els teus dubtes en temps real. Disponible 24/7 per a qualsevol consulta informàtica o tècnica sobre els nostres productes.</p>
-            <a href="https://m365.cloud.microsoft/chat/?titleId=T_8f1bfb77-65c8-98be-70af-eff3712e635b&source=embedded-builder&auth=2" target="_blank" class="chatbot-btn">
-                🧠 Parlar amb la IA d'INGESCO
-            </a>
-            <div class="chatbot-features">
-                <span class="chatbot-feature">🔐 Contrasenyes</span>
-                <span class="chatbot-feature">📧 Outlook</span>
-                <span class="chatbot-feature">🔒 VPN</span>
-                <span class="chatbot-feature">💬 Teams</span>
-                <span class="chatbot-feature">📁 SharePoint</span>
-                <span class="chatbot-feature">⚡ Parallamps</span>
-                <span class="chatbot-feature">🛡️ Sobretensions</span>
+        <!-- CTA Section -->
+        <section class="section" id="ia">
+            <div class="cta-section">
+                <img src="INGESCO_IA.png" alt="INGESCO IA" onerror="this.style.display='none'">
+                <h2>Necessites més ajuda?</h2>
+                <p>La Intel·ligència Artificial d'INGESCO pot resoldre els teus dubtes en temps real. Disponible 24/7 per a qualsevol consulta informàtica o tècnica sobre els nostres productes.</p>
+                <a href="https://chatgpt.com/g/g-695504e3176081919dba33057f4f3a37-ingesco-ia" target="_blank" class="cta-btn">🧠 Parlar amb la IA d'INGESCO</a>
+                <div class="cta-features">
+                    <span class="cta-feature">🔐 Contrasenyes</span>
+                    <span class="cta-feature">📧 Outlook</span>
+                    <span class="cta-feature">🔒 VPN</span>
+                    <span class="cta-feature">💬 Teams</span>
+                    <span class="cta-feature">📁 SharePoint</span>
+                    <span class="cta-feature">⚡ Parallamps</span>
+                    <span class="cta-feature">🛡️ Sobretensions</span>
+                </div>
             </div>
         </section>
     </main>
@@ -1048,47 +727,16 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-links">
-            <a href="https://www.ingesco.com" target="_blank">Web INGESCO</a>
-            <a href="https://www.ingesco.com/es/catalogo" target="_blank">Catàleg</a>
+            <a href="https://www.ingesco.com">Web INGESCO</a>
+            <a href="https://www.ingesco.com/es/catalogo">Catàleg</a>
             <a href="mailto:it@ingesco.com">Contactar IT</a>
-            <a href="https://m365.cloud.microsoft/chat/?titleId=T_8f1bfb77-65c8-98be-70af-eff3712e635b&source=embedded-builder&auth=2" target="_blank">IA INGESCO</a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=O18QWqHwwEuTMopJiTIcyUs0CIBagtBDjhAS2DLf-IRUMVQ0UUFKQzhSTkpNUFlJTkNQMFA2RDdVQS4u" target="_blank">🎫 Crear Ticket</a>
+            <a href="https://chatgpt.com/g/g-695504e3176081919dba33057f4f3a37-ingesco-ia" target="_blank">🧠 IA INGESCO</a>
         </div>
         <p>© 2025 INGESCO · Departament d'IT · Protecció i Prevenció contra el Llamp</p>
     </footer>
 
-    <!-- Scroll to top button -->
-    <button class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
-
-    <script>
-        // Toggle guide cards
-        function toggleGuide(header) {
-            const card = header.parentElement;
-            card.classList.toggle('open');
-        }
-
-        // Show/hide scroll to top button
-        window.addEventListener('scroll', function() {
-            const scrollBtn = document.querySelector('.scroll-top');
-            if (window.scrollY > 500) {
-                scrollBtn.classList.add('visible');
-            } else {
-                scrollBtn.classList.remove('visible');
-            }
-        });
-
-        // Open guide if hash in URL
-        window.addEventListener('load', function() {
-            const hash = window.location.hash;
-            if (hash) {
-                const card = document.querySelector(hash);
-                if (card && card.classList.contains('guide-card')) {
-                    card.classList.add('open');
-                    setTimeout(() => {
-                        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 100);
-                }
-            }
-        });
-    </script>
+    <!-- Back to Top -->
+    <a href="#" class="back-to-top">↑</a>
 </body>
 </html>
