@@ -7,45 +7,30 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
-        }
-        #map {
-            height: calc(100vh - 160px);
-            width: 100%;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; }
+        
+        #map { height: calc(100vh - 180px); width: 100%; }
+        
         .header {
             background: linear-gradient(135deg, #1a5276 0%, #2e86ab 100%);
             color: white;
-            padding: 12px 20px;
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
         }
-        .header h1 {
-            font-size: 1.3em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .header-info {
-            font-size: 0.85em;
-            opacity: 0.9;
-        }
+        .header h1 { font-size: 1.2em; }
+        .header-info { font-size: 0.8em; opacity: 0.9; }
+        
         .control-panel {
             background: white;
-            padding: 12px 20px;
+            padding: 10px 15px;
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 12px;
             justify-content: center;
             align-items: center;
             border-bottom: 3px solid #2e86ab;
@@ -54,185 +39,218 @@
         .control-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
         }
         .control-group label {
-            font-size: 0.85em;
+            font-size: 0.75em;
             color: #555;
             font-weight: 600;
+            white-space: nowrap;
         }
         .control-group select {
-            padding: 8px 15px;
+            padding: 6px 8px;
             border: 2px solid #2e86ab;
-            border-radius: 6px;
-            font-size: 0.9em;
+            border-radius: 5px;
+            font-size: 0.8em;
             background: white;
             color: #1a5276;
             font-weight: 600;
             cursor: pointer;
-            min-width: 120px;
         }
-        .control-group select:focus {
-            outline: none;
-            border-color: #1a5276;
-        }
-        .level-selector {
+        
+        .type-tabs {
             display: flex;
-            gap: 5px;
+            gap: 3px;
+            background: #e8f4f8;
+            padding: 3px;
+            border-radius: 6px;
         }
+        .type-tab {
+            padding: 5px 10px;
+            border: none;
+            background: transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75em;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .type-tab.active { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .type-tab.pdc { color: #3498db; }
+        .type-tab.pdce { color: #9b59b6; }
+        .type-tab.air { color: #e67e22; }
+        
+        .level-selector { display: flex; gap: 3px; }
         .level-btn {
-            padding: 8px 14px;
+            padding: 5px 10px;
             border: 2px solid #2e86ab;
             background: white;
             color: #2e86ab;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 0.8em;
             transition: all 0.2s;
-            font-size: 0.9em;
         }
-        .level-btn.active {
-            background: #2e86ab;
-            color: white;
-        }
-        .level-btn:hover {
-            background: #1a5276;
-            color: white;
-            border-color: #1a5276;
-        }
+        .level-btn.active { background: #2e86ab; color: white; }
+        .level-btn:hover { background: #1a5276; color: white; border-color: #1a5276; }
+        
         .info-display {
             background: #e8f4f8;
-            padding: 8px 15px;
-            border-radius: 6px;
+            padding: 5px 10px;
+            border-radius: 5px;
             text-align: center;
         }
-        .info-display .label {
-            font-size: 0.7em;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .info-display .label { font-size: 0.6em; color: #666; text-transform: uppercase; }
+        .info-display .value { font-size: 0.95em; font-weight: bold; color: #1a5276; }
+        
+        .search-container {
+            display: flex;
+            gap: 5px;
+            position: relative;
         }
-        .info-display .value {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #1a5276;
+        .search-input {
+            padding: 7px 10px;
+            border: 2px solid #27ae60;
+            border-radius: 5px;
+            font-size: 0.8em;
+            width: 260px;
         }
+        .search-input:focus { outline: none; border-color: #1e8449; }
+        .search-btn {
+            padding: 7px 12px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        .search-btn:hover { background: #1e8449; }
+        .search-btn:disabled { background: #94a3b8; cursor: wait; }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 40px;
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 5px;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 2000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+        }
+        .search-results.show { display: block; }
+        .search-result-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            font-size: 0.8em;
+        }
+        .search-result-item:hover { background: #e8f8f0; }
+        .search-result-item:last-child { border-bottom: none; }
+        
+        .clear-btn {
+            padding: 5px 10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.75em;
+        }
+        .clear-btn:hover { background: #c0392b; }
+        
         .instruction {
             background: #fff3cd;
             color: #856404;
-            padding: 8px 15px;
-            border-radius: 6px;
-            font-size: 0.85em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.75em;
         }
+        
         .legend {
             position: absolute;
             bottom: 30px;
             left: 10px;
             background: white;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 8px;
             box-shadow: 0 3px 15px rgba(0,0,0,0.2);
             z-index: 1000;
-            max-width: 300px;
-            font-size: 0.85em;
+            max-width: 340px;
+            font-size: 0.7em;
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
         }
         .legend h4 {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: #1a5276;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1em;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            background: white;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
         }
-        .legend-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
+        .legend-section { margin-bottom: 8px; }
+        .legend-section h5 {
+            font-size: 0.9em;
+            margin-bottom: 4px;
+            padding: 2px 5px;
+            border-radius: 3px;
         }
+        .legend-section.pdc h5 { background: #d6eaf8; color: #2874a6; }
+        .legend-section.pdce h5 { background: #e8daef; color: #7d3c98; }
+        .legend-section.air h5 { background: #fdebd0; color: #b9770e; }
+        
+        .legend-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
         .legend-table th, .legend-table td {
-            padding: 4px 6px;
+            padding: 2px 4px;
             text-align: center;
-            font-size: 0.8em;
+            font-size: 0.85em;
             border: 1px solid #ddd;
         }
-        .legend-table th {
-            background: #2e86ab;
-            color: white;
-        }
-        .legend-table tr:nth-child(even) {
-            background: #f8f9fa;
-        }
-        .legend-table .highlight {
-            background: #d4edda !important;
-            font-weight: bold;
-        }
+        .legend-table th { background: #34495e; color: white; }
+        .legend-table .highlight { background: #d5f5e3 !important; font-weight: bold; }
+        
         .coords-display {
             position: absolute;
             bottom: 30px;
             right: 10px;
             background: white;
-            padding: 10px 15px;
-            border-radius: 8px;
+            padding: 8px 10px;
+            border-radius: 6px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             z-index: 1000;
-            font-size: 0.85em;
+            font-size: 0.75em;
         }
-        .coords-display strong {
-            color: #1a5276;
-        }
-        .search-box {
-            display: flex;
-            gap: 5px;
-        }
-        .search-box input {
-            padding: 8px 12px;
-            border: 2px solid #2e86ab;
-            border-radius: 6px;
-            font-size: 0.85em;
-            width: 200px;
-        }
-        .search-box button {
-            padding: 8px 12px;
-            background: #2e86ab;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85em;
-        }
-        .search-box button:hover {
-            background: #1a5276;
-        }
-        .clear-btn {
-            padding: 8px 15px;
+        
+        .popup-content { text-align: center; min-width: 200px; }
+        .popup-content h3 { color: #1a5276; margin-bottom: 8px; font-size: 1.1em; }
+        .popup-table { width: 100%; font-size: 0.85em; margin-bottom: 8px; }
+        .popup-table td { padding: 3px; }
+        .popup-table td:first-child { text-align: left; color: #666; }
+        .popup-table td:last-child { text-align: right; font-weight: bold; }
+        .popup-delete {
+            margin-top: 8px;
+            padding: 5px 12px;
             background: #e74c3c;
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85em;
+            font-size: 0.8em;
         }
-        .clear-btn:hover {
-            background: #c0392b;
-        }
-        .model-info {
-            font-size: 0.75em;
-            color: #666;
-            margin-top: 2px;
-        }
-        @media (max-width: 768px) {
-            .control-panel {
-                padding: 10px;
-                gap: 10px;
-            }
-            .legend {
-                max-width: 250px;
-                font-size: 0.75em;
-            }
+        .popup-delete:hover { background: #c0392b; }
+        
+        @media (max-width: 900px) {
+            .search-input { width: 180px; }
+            .legend { max-width: 280px; }
         }
     </style>
 </head>
@@ -244,15 +262,17 @@
     
     <div class="control-panel">
         <div class="control-group">
-            <label>📡 Model:</label>
-            <select id="modelSelect" onchange="updateModel()">
-                <option value="PDC3.1">PDC 3.1 (Δt=15µs)</option>
-                <option value="PDC3.3">PDC 3.3 (Δt=25µs)</option>
-                <option value="PDC4.3">PDC 4.3 (Δt=34µs)</option>
-                <option value="PDC5.3">PDC 5.3 (Δt=43µs)</option>
-                <option value="PDC6.3">PDC 6.3 (Δt=54µs)</option>
-                <option value="PDC6.4" selected>PDC 6.4 (Δt=60µs)</option>
-            </select>
+            <label>📡 Tipus:</label>
+            <div class="type-tabs">
+                <button class="type-tab pdc active" onclick="setType('pdc')">PDC</button>
+                <button class="type-tab pdce" onclick="setType('pdce')">PDC.E</button>
+                <button class="type-tab air" onclick="setType('air')">AIR</button>
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <label>Model:</label>
+            <select id="modelSelect" onchange="updateModel()"></select>
         </div>
         
         <div class="control-group">
@@ -266,273 +286,248 @@
         </div>
         
         <div class="info-display">
-            <div class="label">Radi de Protecció</div>
+            <div class="label">Radi</div>
             <div class="value" id="radiusDisplay">80 m</div>
         </div>
         
         <div class="control-group">
-            <div class="search-box">
-                <input type="text" id="coordsInput" placeholder="Lat, Lng (ex: 41.565, 2.003)">
-                <button onclick="goToCoords()">📍 Anar</button>
+            <div class="search-container">
+                <input type="text" id="addressInput" class="search-input" placeholder="🔍 Cercar adreça o lloc...">
+                <button class="search-btn" id="searchBtn" onclick="searchAddress()">Cercar</button>
+                <div class="search-results" id="searchResults"></div>
             </div>
         </div>
         
         <button class="clear-btn" onclick="clearAllMarkers()">🗑️ Esborrar tot</button>
         
-        <div class="instruction">
-            👆 Fes clic al mapa per col·locar el parallamps
-        </div>
+        <div class="instruction">👆 Clic al mapa o cerca una adreça</div>
     </div>
     
     <div id="map"></div>
     
     <div class="legend" id="legend">
-        <h4>📋 Taula de Radis (h=20m)</h4>
-        <table class="legend-table" id="radiusTable">
-            <thead>
-                <tr>
-                    <th>Model</th>
-                    <th>I</th>
-                    <th>II</th>
-                    <th>III</th>
-                    <th>IV</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>PDC 3.1</td>
-                    <td>35</td>
-                    <td>43</td>
-                    <td>54</td>
-                    <td>63</td>
-                </tr>
-                <tr>
-                    <td>PDC 3.3</td>
-                    <td>45</td>
-                    <td>54</td>
-                    <td>65</td>
-                    <td>75</td>
-                </tr>
-                <tr>
-                    <td>PDC 4.3</td>
-                    <td>54</td>
-                    <td>63</td>
-                    <td>74</td>
-                    <td>85</td>
-                </tr>
-                <tr>
-                    <td>PDC 5.3</td>
-                    <td>63</td>
-                    <td>72</td>
-                    <td>84</td>
-                    <td>95</td>
-                </tr>
-                <tr>
-                    <td>PDC 6.3</td>
-                    <td>74</td>
-                    <td>83</td>
-                    <td>95</td>
-                    <td>106</td>
-                </tr>
-                <tr>
-                    <td>PDC 6.4</td>
-                    <td>80</td>
-                    <td>89</td>
-                    <td>102</td>
-                    <td>113</td>
-                </tr>
-            </tbody>
-        </table>
-        <p style="margin-top: 10px; font-size: 0.8em; color: #666;">
-            <strong>Nota:</strong> Radis en metres, calculats per una diferència d'altura de 20m entre la punta del parallamps i el pla horitzontal.
+        <h4>📋 Radis de Protecció (h=20m)</h4>
+        
+        <div class="legend-section pdc">
+            <h5>PDC (No electrònic)</h5>
+            <table class="legend-table" id="tablePDC">
+                <thead><tr><th>Model</th><th>Δt</th><th>I</th><th>II</th><th>III</th><th>IV</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        
+        <div class="legend-section pdce">
+            <h5>PDC.E (Electrònic)</h5>
+            <table class="legend-table" id="tablePDCE">
+                <thead><tr><th>Model</th><th>Δt</th><th>I</th><th>II</th><th>III</th><th>IV</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        
+        <div class="legend-section air">
+            <h5>AIR (Electrònic avançat)</h5>
+            <table class="legend-table" id="tableAIR">
+                <thead><tr><th>Model</th><th>Δt</th><th>I</th><th>II</th><th>III</th><th>IV</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        
+        <p style="margin-top: 8px; font-size: 0.85em; color: #666;">
+            Radis en metres. Altura de referència: 20m
         </p>
     </div>
     
     <div class="coords-display">
-        <strong>📍 Posició:</strong> <span id="currentCoords">-</span>
+        <strong>📍</strong> <span id="currentCoords">-</span>
     </div>
 
     <script>
-        // Dades dels parallamps Ingesco PDC (radis en metres, h=20m)
-        const models = {
-            'PDC3.1': { name: 'PDC 3.1', dt: 15, radii: { 1: 35, 2: 43, 3: 54, 4: 63 } },
-            'PDC3.3': { name: 'PDC 3.3', dt: 25, radii: { 1: 45, 2: 54, 3: 65, 4: 75 } },
-            'PDC4.3': { name: 'PDC 4.3', dt: 34, radii: { 1: 54, 2: 63, 3: 74, 4: 85 } },
-            'PDC5.3': { name: 'PDC 5.3', dt: 43, radii: { 1: 63, 2: 72, 3: 84, 4: 95 } },
-            'PDC6.3': { name: 'PDC 6.3', dt: 54, radii: { 1: 74, 2: 83, 3: 95, 4: 106 } },
-            'PDC6.4': { name: 'PDC 6.4', dt: 60, radii: { 1: 80, 2: 89, 3: 102, 4: 113 } }
+        // ============================================
+        // DADES DELS PARALLAMPS INGESCO
+        // ============================================
+        const allModels = {
+            pdc: {
+                name: 'PDC',
+                color: '#3498db',
+                models: {
+                    'PDC 3.1': { dt: 15, radii: { 1: 35, 2: 43, 3: 54, 4: 63 } },
+                    'PDC 3.3': { dt: 25, radii: { 1: 45, 2: 54, 3: 65, 4: 75 } },
+                    'PDC 4.3': { dt: 34, radii: { 1: 54, 2: 63, 3: 74, 4: 85 } },
+                    'PDC 5.3': { dt: 43, radii: { 1: 63, 2: 72, 3: 84, 4: 95 } },
+                    'PDC 6.3': { dt: 54, radii: { 1: 74, 2: 83, 3: 95, 4: 106 } },
+                    'PDC 6.4': { dt: 60, radii: { 1: 80, 2: 89, 3: 102, 4: 113 } }
+                }
+            },
+            pdce: {
+                name: 'PDC.E',
+                color: '#9b59b6',
+                models: {
+                    'PDC.E 15': { dt: 15, radii: { 1: 35, 2: 43, 3: 54, 4: 63 } },
+                    'PDC.E 30': { dt: 30, radii: { 1: 50, 2: 59, 3: 70, 4: 80 } },
+                    'PDC.E 45': { dt: 45, radii: { 1: 65, 2: 74, 3: 86, 4: 97 } },
+                    'PDC.E 60': { dt: 60, radii: { 1: 80, 2: 89, 3: 102, 4: 113 } }
+                }
+            },
+            air: {
+                name: 'AIR',
+                color: '#e67e22',
+                models: {
+                    'AIR 20': { dt: 20, radii: { 1: 40, 2: 49, 3: 60, 4: 69 } },
+                    'AIR 40': { dt: 40, radii: { 1: 60, 2: 69, 3: 80, 4: 91 } },
+                    'AIR 60': { dt: 60, radii: { 1: 80, 2: 89, 3: 102, 4: 113 } }
+                }
+            }
         };
         
-        // Colors per nivell
-        const levelColors = {
-            1: '#e74c3c',  // Vermell - Nivell I (més estricte)
-            2: '#f39c12',  // Taronja - Nivell II
-            3: '#3498db',  // Blau - Nivell III
-            4: '#27ae60'   // Verd - Nivell IV
-        };
-        
-        let currentModel = 'PDC6.4';
+        // Estat actual
+        let currentType = 'pdc';
+        let currentModel = 'PDC 6.4';
         let currentLevel = 1;
         let markers = [];
         let circles = [];
         
-        // Inicialitzar mapa centrat a les coordenades originals
-        const initialLat = 41.56589731413618;
-        const initialLng = 2.0034636048418606;
+        // Coordenades inicials
+        const initialLat = 41.557323;
+        const initialLng = 2.031215;
         
-        const map = L.map('map').setView([initialLat, initialLng], 16);
+        // ============================================
+        // INICIALITZAR MAPA
+        // ============================================
+        const map = L.map('map').setView([initialLat, initialLng], 17);
         
         // Capes base
         const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri'
+            attribution: '&copy; Esri'
         });
-        
         const streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
         });
-        
-        const topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenTopoMap'
-        });
-        
         const labels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}');
         
-        // Afegir satèl·lit per defecte
         satellite.addTo(map);
         labels.addTo(map);
         
-        // Control de capes
-        const baseMaps = {
-            "🛰️ Satèl·lit": satellite,
-            "🗺️ Carrers": streets,
-            "🏔️ Topogràfic": topo
-        };
-        L.control.layers(baseMaps).addTo(map);
-        
-        // Escala
+        L.control.layers({ "🛰️ Satèl·lit": satellite, "🗺️ Carrers": streets }).addTo(map);
         L.control.scale({ metric: true, imperial: false, position: 'bottomright' }).addTo(map);
         
-        // Funció per obtenir el radi actual
+        // ============================================
+        // FUNCIONS PRINCIPALS
+        // ============================================
+        
         function getCurrentRadius() {
-            return models[currentModel].radii[currentLevel];
+            return allModels[currentType].models[currentModel].radii[currentLevel];
         }
         
-        // Actualitzar display
+        function getCurrentColor() {
+            return allModels[currentType].color;
+        }
+        
         function updateDisplay() {
-            const radius = getCurrentRadius();
-            document.getElementById('radiusDisplay').textContent = radius + ' m';
+            document.getElementById('radiusDisplay').textContent = getCurrentRadius() + ' m';
             highlightTableCell();
         }
         
-        // Ressaltar cel·la de la taula
-        function highlightTableCell() {
-            const table = document.getElementById('radiusTable');
-            const rows = table.querySelectorAll('tbody tr');
+        function populateModelSelect() {
+            const select = document.getElementById('modelSelect');
+            select.innerHTML = '';
+            const models = allModels[currentType].models;
             
-            // Eliminar tots els highlights
-            table.querySelectorAll('td').forEach(td => td.classList.remove('highlight'));
-            
-            // Trobar la fila del model actual
-            const modelIndex = Object.keys(models).indexOf(currentModel);
-            if (modelIndex >= 0 && rows[modelIndex]) {
-                const cells = rows[modelIndex].querySelectorAll('td');
-                cells[0].classList.add('highlight'); // Nom del model
-                cells[currentLevel].classList.add('highlight'); // Cel·la del nivell
+            for (const [name, data] of Object.entries(models)) {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = `${name} (${data.dt}µs)`;
+                select.appendChild(option);
             }
+            
+            // Seleccionar el model amb major Δt per defecte
+            const modelNames = Object.keys(models);
+            currentModel = modelNames[modelNames.length - 1];
+            select.value = currentModel;
         }
         
-        // Canviar model
+        function setType(type) {
+            currentType = type;
+            
+            // Actualitzar tabs
+            document.querySelectorAll('.type-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.classList.contains(type)) tab.classList.add('active');
+            });
+            
+            populateModelSelect();
+            updateDisplay();
+            updateAllCircles();
+        }
+        
         function updateModel() {
             currentModel = document.getElementById('modelSelect').value;
             updateDisplay();
             updateAllCircles();
         }
         
-        // Canviar nivell
         function setLevel(level) {
             currentLevel = level;
-            
-            // Actualitzar botons
-            document.querySelectorAll('.level-btn').forEach((btn, index) => {
-                btn.classList.toggle('active', index + 1 === level);
+            document.querySelectorAll('.level-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i + 1 === level);
             });
-            
             updateDisplay();
             updateAllCircles();
         }
         
-        // Actualitzar tots els cercles
         function updateAllCircles() {
             const radius = getCurrentRadius();
-            const color = levelColors[currentLevel];
+            const color = getCurrentColor();
             
             circles.forEach(circle => {
                 circle.setRadius(radius);
-                circle.setStyle({
-                    color: color,
-                    fillColor: color
-                });
+                circle.setStyle({ color: color, fillColor: color });
             });
             
-            // Actualitzar popups
-            markers.forEach((marker, index) => {
-                updateMarkerPopup(marker, circles[index]);
-            });
+            markers.forEach((marker, i) => updateMarkerPopup(marker, circles[i]));
         }
         
-        // Crear icona de parallamps
+        // ============================================
+        // GESTIÓ DE MARCADORS
+        // ============================================
+        
         function createLightningIcon() {
             return L.divIcon({
-                html: '<div style="font-size: 28px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); filter: drop-shadow(0 0 3px white);">⚡</div>',
-                iconSize: [28, 28],
-                iconAnchor: [14, 14],
-                className: 'lightning-marker'
+                html: '<div style="font-size: 26px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">⚡</div>',
+                iconSize: [26, 26],
+                iconAnchor: [13, 13],
+                className: ''
             });
         }
         
-        // Actualitzar popup del marcador
         function updateMarkerPopup(marker, circle) {
             const latlng = marker.getLatLng();
-            const model = models[currentModel];
+            const model = allModels[currentType].models[currentModel];
             const radius = getCurrentRadius();
+            const color = getCurrentColor();
+            const idx = markers.indexOf(marker);
             
             marker.setPopupContent(`
-                <div style="text-align: center; min-width: 220px; padding: 5px;">
-                    <h3 style="color: #1a5276; margin-bottom: 8px;">⚡ Ingesco ${model.name}</h3>
-                    <table style="width: 100%; font-size: 0.9em; margin-bottom: 8px;">
-                        <tr>
-                            <td style="text-align: left; color: #666;">Δt:</td>
-                            <td style="text-align: right; font-weight: bold;">${model.dt} µs</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left; color: #666;">Nivell:</td>
-                            <td style="text-align: right; font-weight: bold;">${['I', 'II', 'III', 'IV'][currentLevel-1]}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left; color: #666;">Radi:</td>
-                            <td style="text-align: right; font-weight: bold; color: ${levelColors[currentLevel]};">${radius} m</td>
-                        </tr>
+                <div class="popup-content">
+                    <h3>⚡ Ingesco ${currentModel}</h3>
+                    <table class="popup-table">
+                        <tr><td>Tipus:</td><td style="color:${color}">${allModels[currentType].name}</td></tr>
+                        <tr><td>Δt:</td><td>${model.dt} µs</td></tr>
+                        <tr><td>Nivell:</td><td>${['I','II','III','IV'][currentLevel-1]}</td></tr>
+                        <tr><td>Radi:</td><td style="color:${color}">${radius} m</td></tr>
                     </table>
-                    <hr style="border: none; border-top: 1px solid #ddd; margin: 8px 0;">
-                    <div style="font-size: 0.85em; color: #666;">
-                        <strong>Coordenades:</strong><br>
+                    <hr style="border:none;border-top:1px solid #ddd;margin:8px 0;">
+                    <div style="font-size:0.8em;color:#666;">
                         ${latlng.lat.toFixed(6)}°N, ${latlng.lng.toFixed(6)}°E
                     </div>
-                    <button onclick="removeMarker(${markers.indexOf(marker)})" 
-                            style="margin-top: 10px; padding: 5px 15px; background: #e74c3c; color: white; 
-                                   border: none; border-radius: 4px; cursor: pointer; font-size: 0.85em;">
-                        🗑️ Eliminar
-                    </button>
+                    <button class="popup-delete" onclick="removeMarker(${idx})">🗑️ Eliminar</button>
                 </div>
             `);
         }
         
-        // Afegir marcador al mapa
-        function addMarker(latlng) {
+        function addMarker(latlng, openPopup = true) {
             const radius = getCurrentRadius();
-            const color = levelColors[currentLevel];
+            const color = getCurrentColor();
             
-            // Crear cercle
             const circle = L.circle(latlng, {
                 color: color,
                 fillColor: color,
@@ -541,87 +536,159 @@
                 weight: 3
             }).addTo(map);
             
-            // Crear marcador
             const marker = L.marker(latlng, { 
                 icon: createLightningIcon(),
                 draggable: true
             }).addTo(map);
             
-            // Guardar referències
-            const markerIndex = markers.length;
             markers.push(marker);
             circles.push(circle);
             
-            // Popup
+            marker.bindPopup('');
             updateMarkerPopup(marker, circle);
-            marker.bindPopup('').openPopup();
-            updateMarkerPopup(marker, circle);
+            if (openPopup) marker.openPopup();
             
-            // Event de drag
-            marker.on('drag', function(e) {
-                circle.setLatLng(e.latlng);
-            });
-            
-            marker.on('dragend', function(e) {
-                updateMarkerPopup(marker, circle);
-            });
+            marker.on('drag', e => circle.setLatLng(e.latlng));
+            marker.on('dragend', () => updateMarkerPopup(marker, circle));
         }
         
-        // Eliminar marcador específic
-        window.removeMarker = function(index) {
-            if (index >= 0 && index < markers.length) {
-                map.removeLayer(markers[index]);
-                map.removeLayer(circles[index]);
-                markers.splice(index, 1);
-                circles.splice(index, 1);
+        window.removeMarker = function(idx) {
+            if (idx >= 0 && idx < markers.length) {
+                map.removeLayer(markers[idx]);
+                map.removeLayer(circles[idx]);
+                markers.splice(idx, 1);
+                circles.splice(idx, 1);
             }
         };
         
-        // Esborrar tots els marcadors
         function clearAllMarkers() {
-            markers.forEach(marker => map.removeLayer(marker));
-            circles.forEach(circle => map.removeLayer(circle));
+            markers.forEach(m => map.removeLayer(m));
+            circles.forEach(c => map.removeLayer(c));
             markers = [];
             circles = [];
         }
         
-        // Clic al mapa per afegir marcador
-        map.on('click', function(e) {
-            addMarker(e.latlng);
+        // ============================================
+        // CERCA PER ADREÇA (Nominatim)
+        // ============================================
+        
+        async function searchAddress() {
+            const query = document.getElementById('addressInput').value.trim();
+            if (!query) return;
+            
+            const btn = document.getElementById('searchBtn');
+            const resultsDiv = document.getElementById('searchResults');
+            
+            btn.disabled = true;
+            btn.textContent = '...';
+            resultsDiv.classList.remove('show');
+            
+            try {
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`,
+                    { headers: { 'Accept-Language': 'ca,es,en' } }
+                );
+                const results = await response.json();
+                
+                if (results.length === 0) {
+                    resultsDiv.innerHTML = '<div class="search-result-item" style="color:#999;">No s\'han trobat resultats</div>';
+                } else {
+                    resultsDiv.innerHTML = results.map((r, i) => `
+                        <div class="search-result-item" onclick="selectAddress(${r.lat}, ${r.lon}, '${r.display_name.replace(/'/g, "\\'")}')">
+                            📍 ${r.display_name}
+                        </div>
+                    `).join('');
+                }
+                resultsDiv.classList.add('show');
+                
+            } catch (error) {
+                resultsDiv.innerHTML = '<div class="search-result-item" style="color:#e74c3c;">Error en la cerca</div>';
+                resultsDiv.classList.add('show');
+            }
+            
+            btn.disabled = false;
+            btn.textContent = 'Cercar';
+        }
+        
+        window.selectAddress = function(lat, lon, name) {
+            const latlng = L.latLng(lat, lon);
+            map.setView(latlng, 18);
+            addMarker(latlng);
+            document.getElementById('searchResults').classList.remove('show');
+            document.getElementById('addressInput').value = '';
+        };
+        
+        // Tancar resultats al clicar fora
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                document.getElementById('searchResults').classList.remove('show');
+            }
         });
         
-        // Mostrar coordenades del cursor
-        map.on('mousemove', function(e) {
+        // Enter per cercar
+        document.getElementById('addressInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchAddress();
+        });
+        
+        // ============================================
+        // GENERAR TAULES DE LA LLEGENDA
+        // ============================================
+        
+        function generateTables() {
+            for (const [type, data] of Object.entries(allModels)) {
+                const tbody = document.querySelector(`#table${type.toUpperCase()} tbody`);
+                tbody.innerHTML = '';
+                
+                for (const [name, model] of Object.entries(data.models)) {
+                    const tr = document.createElement('tr');
+                    tr.dataset.type = type;
+                    tr.dataset.model = name;
+                    tr.innerHTML = `
+                        <td>${name.replace('PDC.E ', '').replace('PDC ', '').replace('AIR ', '')}</td>
+                        <td>${model.dt}µs</td>
+                        <td>${model.radii[1]}</td>
+                        <td>${model.radii[2]}</td>
+                        <td>${model.radii[3]}</td>
+                        <td>${model.radii[4]}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            }
+        }
+        
+        function highlightTableCell() {
+            // Treure tots els highlights
+            document.querySelectorAll('.legend-table td').forEach(td => td.classList.remove('highlight'));
+            
+            // Trobar la fila correcta
+            const row = document.querySelector(`tr[data-type="${currentType}"][data-model="${currentModel}"]`);
+            if (row) {
+                row.cells[0].classList.add('highlight');
+                row.cells[currentLevel + 1].classList.add('highlight');
+            }
+        }
+        
+        // ============================================
+        // EVENTS DEL MAPA
+        // ============================================
+        
+        map.on('click', e => addMarker(e.latlng));
+        
+        map.on('mousemove', e => {
             document.getElementById('currentCoords').textContent = 
                 `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
         });
         
-        // Anar a coordenades
-        function goToCoords() {
-            const input = document.getElementById('coordsInput').value;
-            const parts = input.split(',').map(s => parseFloat(s.trim()));
-            
-            if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-                const latlng = L.latLng(parts[0], parts[1]);
-                map.setView(latlng, 17);
-                addMarker(latlng);
-            } else {
-                alert('Format incorrecte. Utilitza: latitud, longitud\nExemple: 41.565, 2.003');
-            }
-        }
+        // ============================================
+        // INICIALITZACIÓ
+        // ============================================
         
-        // Enter per cercar
-        document.getElementById('coordsInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                goToCoords();
-            }
-        });
-        
-        // Inicialització
+        generateTables();
+        populateModelSelect();
         updateDisplay();
         
         // Afegir marcador inicial
-        addMarker(L.latLng(initialLat, initialLng));
+        addMarker(L.latLng(initialLat, initialLng), false);
     </script>
 </body>
 </html>
