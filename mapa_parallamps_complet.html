@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculador de Cobertura - Parallamps Ingesco</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+        }
+        #map {
+            height: calc(100vh - 160px);
+            width: 100%;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a5276 0%, #2e86ab 100%);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header h1 {
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-info {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+        .control-panel {
+            background: white;
+            padding: 12px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 3px solid #2e86ab;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .control-group label {
+            font-size: 0.85em;
+            color: #555;
+            font-weight: 600;
+        }
+        .control-group select {
+            padding: 8px 15px;
+            border: 2px solid #2e86ab;
+            border-radius: 6px;
+            font-size: 0.9em;
+            background: white;
+            color: #1a5276;
+            font-weight: 600;
+            cursor: pointer;
+            min-width: 120px;
+        }
+        .control-group select:focus {
+            outline: none;
+            border-color: #1a5276;
+        }
+        .level-selector {
+            display: flex;
+            gap: 5px;
+        }
+        .level-btn {
+            padding: 8px 14px;
+            border: 2px solid #2e86ab;
+            background: white;
+            color: #2e86ab;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            font-size: 0.9em;
+        }
+        .level-btn.active {
+            background: #2e86ab;
+            color: white;
+        }
+        .level-btn:hover {
+            background: #1a5276;
+            color: white;
+            border-color: #1a5276;
+        }
+        .info-display {
+            background: #e8f4f8;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .info-display .label {
+            font-size: 0.7em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .info-display .value {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #1a5276;
+        }
+        .instruction {
+            background: #fff3cd;
+            color: #856404;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            left: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            max-width: 300px;
+            font-size: 0.85em;
+        }
+        .legend h4 {
+            margin-bottom: 10px;
+            color: #1a5276;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1em;
+        }
+        .legend-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .legend-table th, .legend-table td {
+            padding: 4px 6px;
+            text-align: center;
+            font-size: 0.8em;
+            border: 1px solid #ddd;
+        }
+        .legend-table th {
+            background: #2e86ab;
+            color: white;
+        }
+        .legend-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .legend-table .highlight {
+            background: #d4edda !important;
+            font-weight: bold;
+        }
+        .coords-display {
+            position: absolute;
+            bottom: 30px;
+            right: 10px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 0.85em;
+        }
+        .coords-display strong {
+            color: #1a5276;
+        }
+        .search-box {
+            display: flex;
+            gap: 5px;
+        }
+        .search-box input {
+            padding: 8px 12px;
+            border: 2px solid #2e86ab;
+            border-radius: 6px;
+            font-size: 0.85em;
+            width: 200px;
+        }
+        .search-box button {
+            padding: 8px 12px;
+            background: #2e86ab;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+        .search-box button:hover {
+            background: #1a5276;
+        }
+        .clear-btn {
+            padding: 8px 15px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+        .clear-btn:hover {
+            background: #c0392b;
+        }
+        .model-info {
+            font-size: 0.75em;
+            color: #666;
+            margin-top: 2px;
+        }
+        @media (max-width: 768px) {
+            .control-panel {
+                padding: 10px;
+                gap: 10px;
+            }
+            .legend {
+                max-width: 250px;
+                font-size: 0.75em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ Calculador de Cobertura - Parallamps Ingesco</h1>
+        <div class="header-info">Segons UNE 21186:2011 / NFC 17-102:2011 / NP 4426:2013</div>
+    </div>
+    
+    <div class="control-panel">
+        <div class="control-group">
+            <label>📡 Model:</label>
+            <select id="modelSelect" onchange="updateModel()">
+                <option value="PDC3.1">PDC 3.1 (Δt=15µs)</option>
+                <option value="PDC3.3">PDC 3.3 (Δt=25µs)</option>
+                <option value="PDC4.3">PDC 4.3 (Δt=34µs)</option>
+                <option value="PDC5.3">PDC 5.3 (Δt=43µs)</option>
+                <option value="PDC6.3">PDC 6.3 (Δt=54µs)</option>
+                <option value="PDC6.4" selected>PDC 6.4 (Δt=60µs)</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <label>🛡️ Nivell:</label>
+            <div class="level-selector">
+                <button class="level-btn active" onclick="setLevel(1)">I</button>
+                <button class="level-btn" onclick="setLevel(2)">II</button>
+                <button class="level-btn" onclick="setLevel(3)">III</button>
+                <button class="level-btn" onclick="setLevel(4)">IV</button>
+            </div>
+        </div>
+        
+        <div class="info-display">
+            <div class="label">Radi de Protecció</div>
+            <div class="value" id="radiusDisplay">80 m</div>
+        </div>
+        
+        <div class="control-group">
+            <div class="search-box">
+                <input type="text" id="coordsInput" placeholder="Lat, Lng (ex: 41.565, 2.003)">
+                <button onclick="goToCoords()">📍 Anar</button>
+            </div>
+        </div>
+        
+        <button class="clear-btn" onclick="clearAllMarkers()">🗑️ Esborrar tot</button>
+        
+        <div class="instruction">
+            👆 Fes clic al mapa per col·locar el parallamps
+        </div>
+    </div>
+    
+    <div id="map"></div>
+    
+    <div class="legend" id="legend">
+        <h4>📋 Taula de Radis (h=20m)</h4>
+        <table class="legend-table" id="radiusTable">
+            <thead>
+                <tr>
+                    <th>Model</th>
+                    <th>I</th>
+                    <th>II</th>
+                    <th>III</th>
+                    <th>IV</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>PDC 3.1</td>
+                    <td>35</td>
+                    <td>43</td>
+                    <td>54</td>
+                    <td>63</td>
+                </tr>
+                <tr>
+                    <td>PDC 3.3</td>
+                    <td>45</td>
+                    <td>54</td>
+                    <td>65</td>
+                    <td>75</td>
+                </tr>
+                <tr>
+                    <td>PDC 4.3</td>
+                    <td>54</td>
+                    <td>63</td>
+                    <td>74</td>
+                    <td>85</td>
+                </tr>
+                <tr>
+                    <td>PDC 5.3</td>
+                    <td>63</td>
+                    <td>72</td>
+                    <td>84</td>
+                    <td>95</td>
+                </tr>
+                <tr>
+                    <td>PDC 6.3</td>
+                    <td>74</td>
+                    <td>83</td>
+                    <td>95</td>
+                    <td>106</td>
+                </tr>
+                <tr>
+                    <td>PDC 6.4</td>
+                    <td>80</td>
+                    <td>89</td>
+                    <td>102</td>
+                    <td>113</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 10px; font-size: 0.8em; color: #666;">
+            <strong>Nota:</strong> Radis en metres, calculats per una diferència d'altura de 20m entre la punta del parallamps i el pla horitzontal.
+        </p>
+    </div>
+    
+    <div class="coords-display">
+        <strong>📍 Posició:</strong> <span id="currentCoords">-</span>
+    </div>
+
+    <script>
+        // Dades dels parallamps Ingesco PDC (radis en metres, h=20m)
+        const models = {
+            'PDC3.1': { name: 'PDC 3.1', dt: 15, radii: { 1: 35, 2: 43, 3: 54, 4: 63 } },
+            'PDC3.3': { name: 'PDC 3.3', dt: 25, radii: { 1: 45, 2: 54, 3: 65, 4: 75 } },
+            'PDC4.3': { name: 'PDC 4.3', dt: 34, radii: { 1: 54, 2: 63, 3: 74, 4: 85 } },
+            'PDC5.3': { name: 'PDC 5.3', dt: 43, radii: { 1: 63, 2: 72, 3: 84, 4: 95 } },
+            'PDC6.3': { name: 'PDC 6.3', dt: 54, radii: { 1: 74, 2: 83, 3: 95, 4: 106 } },
+            'PDC6.4': { name: 'PDC 6.4', dt: 60, radii: { 1: 80, 2: 89, 3: 102, 4: 113 } }
+        };
+        
+        // Colors per nivell
+        const levelColors = {
+            1: '#e74c3c',  // Vermell - Nivell I (més estricte)
+            2: '#f39c12',  // Taronja - Nivell II
+            3: '#3498db',  // Blau - Nivell III
+            4: '#27ae60'   // Verd - Nivell IV
+        };
+        
+        let currentModel = 'PDC6.4';
+        let currentLevel = 1;
+        let markers = [];
+        let circles = [];
+        
+        // Inicialitzar mapa centrat a les coordenades originals
+        const initialLat = 41.56589731413618;
+        const initialLng = 2.0034636048418606;
+        
+        const map = L.map('map').setView([initialLat, initialLng], 16);
+        
+        // Capes base
+        const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri'
+        });
+        
+        const streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        });
+        
+        const topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenTopoMap'
+        });
+        
+        const labels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}');
+        
+        // Afegir satèl·lit per defecte
+        satellite.addTo(map);
+        labels.addTo(map);
+        
+        // Control de capes
+        const baseMaps = {
+            "🛰️ Satèl·lit": satellite,
+            "🗺️ Carrers": streets,
+            "🏔️ Topogràfic": topo
+        };
+        L.control.layers(baseMaps).addTo(map);
+        
+        // Escala
+        L.control.scale({ metric: true, imperial: false, position: 'bottomright' }).addTo(map);
+        
+        // Funció per obtenir el radi actual
+        function getCurrentRadius() {
+            return models[currentModel].radii[currentLevel];
+        }
+        
+        // Actualitzar display
+        function updateDisplay() {
+            const radius = getCurrentRadius();
+            document.getElementById('radiusDisplay').textContent = radius + ' m';
+            highlightTableCell();
+        }
+        
+        // Ressaltar cel·la de la taula
+        function highlightTableCell() {
+            const table = document.getElementById('radiusTable');
+            const rows = table.querySelectorAll('tbody tr');
+            
+            // Eliminar tots els highlights
+            table.querySelectorAll('td').forEach(td => td.classList.remove('highlight'));
+            
+            // Trobar la fila del model actual
+            const modelIndex = Object.keys(models).indexOf(currentModel);
+            if (modelIndex >= 0 && rows[modelIndex]) {
+                const cells = rows[modelIndex].querySelectorAll('td');
+                cells[0].classList.add('highlight'); // Nom del model
+                cells[currentLevel].classList.add('highlight'); // Cel·la del nivell
+            }
+        }
+        
+        // Canviar model
+        function updateModel() {
+            currentModel = document.getElementById('modelSelect').value;
+            updateDisplay();
+            updateAllCircles();
+        }
+        
+        // Canviar nivell
+        function setLevel(level) {
+            currentLevel = level;
+            
+            // Actualitzar botons
+            document.querySelectorAll('.level-btn').forEach((btn, index) => {
+                btn.classList.toggle('active', index + 1 === level);
+            });
+            
+            updateDisplay();
+            updateAllCircles();
+        }
+        
+        // Actualitzar tots els cercles
+        function updateAllCircles() {
+            const radius = getCurrentRadius();
+            const color = levelColors[currentLevel];
+            
+            circles.forEach(circle => {
+                circle.setRadius(radius);
+                circle.setStyle({
+                    color: color,
+                    fillColor: color
+                });
+            });
+            
+            // Actualitzar popups
+            markers.forEach((marker, index) => {
+                updateMarkerPopup(marker, circles[index]);
+            });
+        }
+        
+        // Crear icona de parallamps
+        function createLightningIcon() {
+            return L.divIcon({
+                html: '<div style="font-size: 28px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); filter: drop-shadow(0 0 3px white);">⚡</div>',
+                iconSize: [28, 28],
+                iconAnchor: [14, 14],
+                className: 'lightning-marker'
+            });
+        }
+        
+        // Actualitzar popup del marcador
+        function updateMarkerPopup(marker, circle) {
+            const latlng = marker.getLatLng();
+            const model = models[currentModel];
+            const radius = getCurrentRadius();
+            
+            marker.setPopupContent(`
+                <div style="text-align: center; min-width: 220px; padding: 5px;">
+                    <h3 style="color: #1a5276; margin-bottom: 8px;">⚡ Ingesco ${model.name}</h3>
+                    <table style="width: 100%; font-size: 0.9em; margin-bottom: 8px;">
+                        <tr>
+                            <td style="text-align: left; color: #666;">Δt:</td>
+                            <td style="text-align: right; font-weight: bold;">${model.dt} µs</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; color: #666;">Nivell:</td>
+                            <td style="text-align: right; font-weight: bold;">${['I', 'II', 'III', 'IV'][currentLevel-1]}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; color: #666;">Radi:</td>
+                            <td style="text-align: right; font-weight: bold; color: ${levelColors[currentLevel]};">${radius} m</td>
+                        </tr>
+                    </table>
+                    <hr style="border: none; border-top: 1px solid #ddd; margin: 8px 0;">
+                    <div style="font-size: 0.85em; color: #666;">
+                        <strong>Coordenades:</strong><br>
+                        ${latlng.lat.toFixed(6)}°N, ${latlng.lng.toFixed(6)}°E
+                    </div>
+                    <button onclick="removeMarker(${markers.indexOf(marker)})" 
+                            style="margin-top: 10px; padding: 5px 15px; background: #e74c3c; color: white; 
+                                   border: none; border-radius: 4px; cursor: pointer; font-size: 0.85em;">
+                        🗑️ Eliminar
+                    </button>
+                </div>
+            `);
+        }
+        
+        // Afegir marcador al mapa
+        function addMarker(latlng) {
+            const radius = getCurrentRadius();
+            const color = levelColors[currentLevel];
+            
+            // Crear cercle
+            const circle = L.circle(latlng, {
+                color: color,
+                fillColor: color,
+                fillOpacity: 0.2,
+                radius: radius,
+                weight: 3
+            }).addTo(map);
+            
+            // Crear marcador
+            const marker = L.marker(latlng, { 
+                icon: createLightningIcon(),
+                draggable: true
+            }).addTo(map);
+            
+            // Guardar referències
+            const markerIndex = markers.length;
+            markers.push(marker);
+            circles.push(circle);
+            
+            // Popup
+            updateMarkerPopup(marker, circle);
+            marker.bindPopup('').openPopup();
+            updateMarkerPopup(marker, circle);
+            
+            // Event de drag
+            marker.on('drag', function(e) {
+                circle.setLatLng(e.latlng);
+            });
+            
+            marker.on('dragend', function(e) {
+                updateMarkerPopup(marker, circle);
+            });
+        }
+        
+        // Eliminar marcador específic
+        window.removeMarker = function(index) {
+            if (index >= 0 && index < markers.length) {
+                map.removeLayer(markers[index]);
+                map.removeLayer(circles[index]);
+                markers.splice(index, 1);
+                circles.splice(index, 1);
+            }
+        };
+        
+        // Esborrar tots els marcadors
+        function clearAllMarkers() {
+            markers.forEach(marker => map.removeLayer(marker));
+            circles.forEach(circle => map.removeLayer(circle));
+            markers = [];
+            circles = [];
+        }
+        
+        // Clic al mapa per afegir marcador
+        map.on('click', function(e) {
+            addMarker(e.latlng);
+        });
+        
+        // Mostrar coordenades del cursor
+        map.on('mousemove', function(e) {
+            document.getElementById('currentCoords').textContent = 
+                `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
+        });
+        
+        // Anar a coordenades
+        function goToCoords() {
+            const input = document.getElementById('coordsInput').value;
+            const parts = input.split(',').map(s => parseFloat(s.trim()));
+            
+            if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                const latlng = L.latLng(parts[0], parts[1]);
+                map.setView(latlng, 17);
+                addMarker(latlng);
+            } else {
+                alert('Format incorrecte. Utilitza: latitud, longitud\nExemple: 41.565, 2.003');
+            }
+        }
+        
+        // Enter per cercar
+        document.getElementById('coordsInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                goToCoords();
+            }
+        });
+        
+        // Inicialització
+        updateDisplay();
+        
+        // Afegir marcador inicial
+        addMarker(L.latLng(initialLat, initialLng));
+    </script>
+</body>
+</html>
