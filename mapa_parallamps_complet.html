@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculador de Cobertura + CRM - Parallamps Ingesco</title>
+    <title>Calculador de Cobertura - Parallamps Ingesco</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -121,6 +121,12 @@
             width: 200px;
         }
         .search-input:focus { outline: none; border-color: #1e8449; }
+        .search-formats {
+            font-size: 0.7em;
+            color: #666;
+            margin-top: 2px;
+            padding: 0 5px;
+        }
         .search-btn {
             padding: 5px 10px;
             background: #27ae60;
@@ -170,8 +176,6 @@
         .btn-clear:hover { background: #c0392b; }
         .btn-pdf { background: #8e44ad; }
         .btn-pdf:hover { background: #7d3c98; }
-        .btn-crm { background: #e67e22; }
-        .btn-crm:hover { background: #d35400; }
         .btn-draw { background: #27ae60; }
         .btn-draw:hover { background: #1e8449; }
         .btn-draw.active { background: #1e8449; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
@@ -418,7 +422,7 @@
 <body>
     <div class="header">
         <h1>⚡ Calculador de Cobertura - Parallamps Ingesco</h1>
-        <div class="header-info">Segons UNE 21186:2011 / NFC 17-102:2011 | 🔗 Integració Sage CRM</div>
+        <div class="header-info">Segons UNE 21186:2011 / NFC 17-102:2011</div>
     </div>
     
     <div class="control-panel">
@@ -453,7 +457,8 @@
         
         <div class="control-group">
             <div class="search-container">
-                <input type="text" id="addressInput" class="search-input" placeholder="🔍 Cercar adreça...">
+                <input type="text" id="addressInput" class="search-input" placeholder="🔍 Adreça, coords decimals, DMS o UTM...">
+                <div class="search-formats">Formats: Adreça | 41.395, 2.175 | 41°23'45"N 2°10'30"E | 31T 431234 4591234</div>
                 <button class="search-btn" id="searchBtn" onclick="searchAddress()">Cercar</button>
                 <div class="search-results" id="searchResults"></div>
             </div>
@@ -465,7 +470,7 @@
         <button class="btn-action btn-draw" id="btnDrawPoly" onclick="startDrawing('polygon')">✏️ Polígon</button>
         <button class="btn-action btn-clear" onclick="clearAllMarkers()">🗑️ Esborrar tot</button>
         
-        <div class="instruction">👆 Clic parallamps | 🏢 Dibuixa edificis | 📧 Envia a Sage CRM</div>
+        <div class="instruction">👆 Clic parallamps per col·locar | 🏢 Dibuixa edificis per verificar cobertura</div>
     </div>
     
     <div id="map"></div>
@@ -520,73 +525,6 @@
         <div class="budget-buttons">
             <button class="btn-cancel" onclick="closeBudgetPanel()">Cancel·lar</button>
             <button class="btn-generate" id="generatePdfBtn" onclick="generatePDF()">📥 Generar PDF</button>
-        </div>
-    </div>
-    
-    <!-- Panel CRM -->
-    <div class="budget-panel" id="crmPanel">
-        <h3>📧 Enviar Oportunitat a CRM</h3>
-        <div class="budget-form">
-            <div style="background: #fff3cd; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85em; color: #856404;">
-                ℹ️ Les dades s'enviaran a <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a1ced1ced3d5d4cfc8d5c0d5d2e1c8cfc6c4d2c2ce8fc2cecc">[email&#160;protected]</a></strong> per crear una oportunitat a Sage CRM.
-            </div>
-            
-            <div class="budget-row">
-                <label>Codi client (6 dígits): *</label>
-                <input type="text" id="crmClientCode" placeholder="000000" maxlength="6" pattern="[0-9]{6}" style="font-family: monospace; font-size: 1.1em; letter-spacing: 2px;">
-            </div>
-            <div class="budget-row">
-                <label>Nom del client:</label>
-                <input type="text" id="crmClientName" placeholder="(opcional, referència)">
-            </div>
-            <div class="budget-row">
-                <label>Email del client:</label>
-                <input type="email" id="crmClientEmail" placeholder="email@exemple.com">
-            </div>
-            <div class="budget-row">
-                <label>Telèfon:</label>
-                <input type="tel" id="crmClientPhone" placeholder="123 456 789">
-            </div>
-            <div class="budget-row">
-                <label>Població:</label>
-                <input type="text" id="crmClientCity" placeholder="Ciutat...">
-            </div>
-            <div class="budget-row">
-                <label>Nom del projecte: *</label>
-                <input type="text" id="crmProjectName" placeholder="Hotel Arucas...">
-            </div>
-            <div class="budget-row">
-                <label>Alçada edifici (m):</label>
-                <input type="number" id="crmBuildingHeight" value="10" min="2" max="100">
-            </div>
-            <div class="budget-row">
-                <label>Tipus de descompte:</label>
-            </div>
-            <div class="budget-row" style="justify-content: center;">
-                <div class="discount-option">
-                    <input type="radio" name="crmDiscount" id="crmDiscInstaller" value="installer" checked>
-                    <label for="crmDiscInstaller">🔧 Instal·lador<br><small>(40+7)</small></label>
-                    <input type="radio" name="crmDiscount" id="crmDiscDistributor" value="distributor">
-                    <label for="crmDiscDistributor">🏪 Distribuïdor<br><small>(50+7)</small></label>
-                </div>
-            </div>
-            <div class="budget-row">
-                <label>Notes addicionals:</label>
-            </div>
-            <div class="budget-row">
-                <textarea id="crmNotes" rows="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9em;" placeholder="Observacions, urgència, etc..."></textarea>
-            </div>
-            
-            <div style="background: #e8f4f8; padding: 10px; border-radius: 8px; margin-top: 10px;">
-                <div style="font-size: 0.8em; color: #1a5276; font-weight: bold; margin-bottom: 5px;">📊 Resum automàtic:</div>
-                <div style="font-size: 0.85em; color: #333;" id="crmSummary">
-                    <!-- Es genera dinàmicament -->
-                </div>
-            </div>
-        </div>
-        <div class="budget-buttons">
-            <button class="btn-cancel" onclick="closeCRMPanel()">Cancel·lar</button>
-            <button class="btn-generate" style="background: #e67e22;" onclick="sendToCRM()">📧 Generar Email</button>
         </div>
     </div>
     
@@ -982,6 +920,107 @@
         // CERCA PER ADREÇA
         // ============================================
         
+        // Funcions de conversió de coordenades
+        function parseDecimalCoords(query) {
+            // Format: 41.395, 2.175 o 41.395 2.175
+            const match = query.match(/^(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)$/);
+            if (match) {
+                const lat = parseFloat(match[1]);
+                const lng = parseFloat(match[2]);
+                if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+                    return { lat, lng, format: 'Coordenades decimals' };
+                }
+            }
+            return null;
+        }
+        
+        function parseDMSCoords(query) {
+            // Format: 41°23'45"N 2°10'30"E o 41º23'45"N 2º10'30"E
+            const dmsRegex = /(\d+)[°º](\d+)[''′](\d+\.?\d*)[""″]?\s*([NSns])\s*(\d+)[°º](\d+)[''′](\d+\.?\d*)[""″]?\s*([EWOewo])/;
+            const match = query.match(dmsRegex);
+            if (match) {
+                let lat = parseInt(match[1]) + parseInt(match[2])/60 + parseFloat(match[3])/3600;
+                let lng = parseInt(match[5]) + parseInt(match[6])/60 + parseFloat(match[7])/3600;
+                
+                if (match[4].toUpperCase() === 'S') lat = -lat;
+                if (match[8].toUpperCase() === 'W' || match[8].toUpperCase() === 'O') lng = -lng;
+                
+                return { lat, lng, format: 'Graus, minuts i segons (DMS)' };
+            }
+            return null;
+        }
+        
+        function parseUTMCoords(query) {
+            // Format: 31T 431234 4591234 o 31N 431234 4591234
+            const utmRegex = /^(\d{1,2})([C-X])\s+(\d+\.?\d*)\s+(\d+\.?\d*)$/i;
+            const match = query.match(utmRegex);
+            if (match) {
+                const zone = parseInt(match[1]);
+                const band = match[2].toUpperCase();
+                const easting = parseFloat(match[3]);
+                const northing = parseFloat(match[4]);
+                
+                // Conversió UTM a Lat/Lng
+                const result = utmToLatLng(zone, band, easting, northing);
+                if (result) {
+                    result.format = `UTM Zona ${zone}${band}`;
+                    return result;
+                }
+            }
+            return null;
+        }
+        
+        function utmToLatLng(zone, band, easting, northing) {
+            // Conversió UTM a WGS84
+            const k0 = 0.9996;
+            const a = 6378137; // WGS84 semi-eix major
+            const e = 0.081819191; // WGS84 excentricitat
+            const e2 = e * e;
+            const e1 = (1 - Math.sqrt(1 - e2)) / (1 + Math.sqrt(1 - e2));
+            
+            const x = easting - 500000; // Remove false easting
+            let y = northing;
+            
+            // Ajustar per hemisferis sud
+            const isNorthern = band >= 'N';
+            if (!isNorthern) {
+                y = y - 10000000; // Remove false northing
+            }
+            
+            const lonOrigin = (zone - 1) * 6 - 180 + 3; // Central meridian
+            
+            const M = y / k0;
+            const mu = M / (a * (1 - e2/4 - 3*e2*e2/64 - 5*e2*e2*e2/256));
+            
+            const phi1 = mu + (3*e1/2 - 27*e1*e1*e1/32) * Math.sin(2*mu)
+                           + (21*e1*e1/16 - 55*e1*e1*e1*e1/32) * Math.sin(4*mu)
+                           + (151*e1*e1*e1/96) * Math.sin(6*mu);
+            
+            const sinPhi1 = Math.sin(phi1);
+            const cosPhi1 = Math.cos(phi1);
+            const tanPhi1 = Math.tan(phi1);
+            
+            const N1 = a / Math.sqrt(1 - e2 * sinPhi1 * sinPhi1);
+            const T1 = tanPhi1 * tanPhi1;
+            const C1 = (e2 / (1 - e2)) * cosPhi1 * cosPhi1;
+            const R1 = a * (1 - e2) / Math.pow(1 - e2 * sinPhi1 * sinPhi1, 1.5);
+            const D = x / (N1 * k0);
+            
+            let lat = phi1 - (N1 * tanPhi1 / R1) * (D*D/2 - (5 + 3*T1 + 10*C1 - 4*C1*C1 - 9*(e2/(1-e2))) * D*D*D*D/24
+                     + (61 + 90*T1 + 298*C1 + 45*T1*T1 - 252*(e2/(1-e2)) - 3*C1*C1) * D*D*D*D*D*D/720);
+            
+            let lng = lonOrigin + (D - (1 + 2*T1 + C1) * D*D*D/6
+                     + (5 - 2*C1 + 28*T1 - 3*C1*C1 + 8*(e2/(1-e2)) + 24*T1*T1) * D*D*D*D*D/120) / cosPhi1;
+            
+            lat = lat * 180 / Math.PI;
+            lng = lng * 180 / Math.PI;
+            
+            if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+                return { lat, lng };
+            }
+            return null;
+        }
+        
         async function searchAddress() {
             const query = document.getElementById('addressInput').value.trim();
             if (!query) return;
@@ -993,6 +1032,24 @@
             btn.textContent = '...';
             resultsDiv.classList.remove('show');
             
+            // Intentar parsejar com a coordenades
+            let coordResult = parseDecimalCoords(query) || parseDMSCoords(query) || parseUTMCoords(query);
+            
+            if (coordResult) {
+                // És una coordenada, anar directament
+                resultsDiv.innerHTML = `
+                    <div class="search-result-item" onclick="selectAddress(${coordResult.lat}, ${coordResult.lng}, '${coordResult.format}')">
+                        📍 <strong>${coordResult.format}</strong><br>
+                        <small>Lat: ${coordResult.lat.toFixed(6)}, Lng: ${coordResult.lng.toFixed(6)}</small>
+                    </div>
+                `;
+                resultsDiv.classList.add('show');
+                btn.disabled = false;
+                btn.textContent = 'Cercar';
+                return;
+            }
+            
+            // Si no és coordenada, cercar per adreça
             try {
                 const response = await fetch(
                     `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`,
@@ -1081,213 +1138,6 @@
         function closeAllPanels() {
             document.getElementById('overlay').classList.remove('show');
             document.getElementById('budgetPanel').classList.remove('show');
-            document.getElementById('crmPanel').classList.remove('show');
-        }
-        
-        // ============================================
-        // FUNCIONS CRM
-        // ============================================
-        
-        function openCRMPanel() {
-            // Actualitzar resum
-            updateCRMSummary();
-            document.getElementById('overlay').classList.add('show');
-            document.getElementById('crmPanel').classList.add('show');
-        }
-        
-        function closeCRMPanel() {
-            document.getElementById('overlay').classList.remove('show');
-            document.getElementById('crmPanel').classList.remove('show');
-        }
-        
-        function updateCRMSummary() {
-            const height = parseFloat(document.getElementById('crmBuildingHeight').value) || 10;
-            const cableMeters = Math.ceil(height * 1.5);
-            const discountType = document.querySelector('input[name="crmDiscount"]:checked').value;
-            const isDistributor = discountType === 'distributor';
-            const discKey = isDistributor ? 'disc2' : 'disc1';
-            const pararrayosDisc = isDistributor ? '50+7' : '40+7';
-            
-            // Calcular total
-            let totalNet = 0;
-            const numRods = lightningRods.length || 1;
-            const mastil = height > 15 ? productCatalog.mastil6m : productCatalog.mastil4m;
-            const clampCount = cableMeters * 3;
-            
-            // Parallamps
-            lightningRods.forEach(rod => {
-                const modelData = allModels[rod.type].models[rod.model];
-                totalNet += applyDiscount(modelData.price, pararrayosDisc);
-            });
-            
-            // Accessoris
-            totalNet += applyDiscount(productCatalog.piezaAdapt.price, productCatalog.piezaAdapt[discKey]) * numRods;
-            totalNet += applyDiscount(mastil.price, mastil[discKey]) * numRods;
-            totalNet += applyDiscount(productCatalog.anclaje.price, productCatalog.anclaje[discKey]) * numRods * 2;
-            totalNet += applyDiscount(productCatalog.cableCobre.price, productCatalog.cableCobre[discKey]) * cableMeters * numRods * 2;
-            totalNet += applyDiscount(productCatalog.abrazadera.price, productCatalog.abrazadera[discKey]) * clampCount * numRods;
-            totalNet += applyDiscount(productCatalog.contador.price, productCatalog.contador[discKey]) * numRods;
-            totalNet += applyDiscount(productCatalog.tuboProtec.price, productCatalog.tuboProtec[discKey]) * numRods;
-            totalNet += applyDiscount(productCatalog.senal.price, productCatalog.senal[discKey]) * numRods;
-            totalNet += applyDiscount(productCatalog.arqueta.price, productCatalog.arqueta[discKey]) * numRods;
-            totalNet += applyDiscount(productCatalog.barraEquip.price, productCatalog.barraEquip[discKey]) * numRods;
-            totalNet += applyDiscount(productCatalog.pica.price, productCatalog.pica[discKey]) * numRods * 3;
-            
-            // Generar llista de parallamps
-            let rodsText = '';
-            if (lightningRods.length === 0) {
-                rodsText = '<em>Cap parallamps col·locat</em>';
-            } else {
-                const rodsByModel = {};
-                lightningRods.forEach(rod => {
-                    const key = rod.model;
-                    if (!rodsByModel[key]) rodsByModel[key] = { model: rod.model, level: rod.level, count: 0 };
-                    rodsByModel[key].count++;
-                });
-                rodsText = Object.values(rodsByModel).map(r => 
-                    `<strong>${r.count}x ${r.model}</strong> (Nivell ${['I','II','III','IV'][r.level-1]})`
-                ).join('<br>');
-            }
-            
-            document.getElementById('crmSummary').innerHTML = `
-                ${rodsText}<br>
-                <hr style="border:none;border-top:1px solid #ccc;margin:8px 0;">
-                Cable: ${cableMeters * numRods * 2}m | Abraçaderes: ${clampCount * numRods}<br>
-                <strong style="color: #e67e22; font-size: 1.1em;">TOTAL NET: ${totalNet.toFixed(2)} €</strong>
-            `;
-        }
-        
-        // Actualitzar resum quan canvien els camps
-        document.addEventListener('change', function(e) {
-            if (e.target.id === 'crmBuildingHeight' || e.target.name === 'crmDiscount') {
-                if (document.getElementById('crmPanel').classList.contains('show')) {
-                    updateCRMSummary();
-                }
-            }
-        });
-        
-        function sendToCRM() {
-            const clientCode = document.getElementById('crmClientCode').value.trim();
-            const clientName = document.getElementById('crmClientName').value.trim();
-            const clientEmail = document.getElementById('crmClientEmail').value.trim();
-            const clientPhone = document.getElementById('crmClientPhone').value.trim();
-            const clientCity = document.getElementById('crmClientCity').value.trim();
-            const projectName = document.getElementById('crmProjectName').value.trim();
-            const height = parseFloat(document.getElementById('crmBuildingHeight').value) || 10;
-            const notes = document.getElementById('crmNotes').value.trim();
-            const discountType = document.querySelector('input[name="crmDiscount"]:checked').value;
-            
-            // Validació
-            if (!clientCode || clientCode.length !== 6 || !/^\d{6}$/.test(clientCode)) {
-                alert('⚠️ Cal introduir un codi de client vàlid (6 dígits numèrics)');
-                document.getElementById('crmClientCode').focus();
-                return;
-            }
-            if (!projectName) {
-                alert('⚠️ Cal introduir el nom del projecte');
-                document.getElementById('crmProjectName').focus();
-                return;
-            }
-            if (lightningRods.length === 0) {
-                alert('⚠️ Cal col·locar almenys un parallamps al mapa');
-                return;
-            }
-            
-            // Calcular dades
-            const cableMeters = Math.ceil(height * 1.5);
-            const isDistributor = discountType === 'distributor';
-            const discKey = isDistributor ? 'disc2' : 'disc1';
-            const discLabel = isDistributor ? 'Distribuïdor (50+7)' : 'Instal·lador (40+7)';
-            const pararrayosDisc = isDistributor ? '50+7' : '40+7';
-            const numRods = lightningRods.length;
-            const mastil = height > 15 ? productCatalog.mastil6m : productCatalog.mastil4m;
-            const clampCount = cableMeters * 3;
-            
-            // Calcular total
-            let totalNet = 0;
-            lightningRods.forEach(rod => {
-                const modelData = allModels[rod.type].models[rod.model];
-                totalNet += applyDiscount(modelData.price, pararrayosDisc);
-            });
-            totalNet += applyDiscount(productCatalog.piezaAdapt.price, productCatalog.piezaAdapt[discKey]) * numRods;
-            totalNet += applyDiscount(mastil.price, mastil[discKey]) * numRods;
-            totalNet += applyDiscount(productCatalog.anclaje.price, productCatalog.anclaje[discKey]) * numRods * 2;
-            totalNet += applyDiscount(productCatalog.cableCobre.price, productCatalog.cableCobre[discKey]) * cableMeters * numRods * 2;
-            totalNet += applyDiscount(productCatalog.abrazadera.price, productCatalog.abrazadera[discKey]) * clampCount * numRods;
-            totalNet += applyDiscount(productCatalog.contador.price, productCatalog.contador[discKey]) * numRods;
-            totalNet += applyDiscount(productCatalog.tuboProtec.price, productCatalog.tuboProtec[discKey]) * numRods;
-            totalNet += applyDiscount(productCatalog.senal.price, productCatalog.senal[discKey]) * numRods;
-            totalNet += applyDiscount(productCatalog.arqueta.price, productCatalog.arqueta[discKey]) * numRods;
-            totalNet += applyDiscount(productCatalog.barraEquip.price, productCatalog.barraEquip[discKey]) * numRods;
-            totalNet += applyDiscount(productCatalog.pica.price, productCatalog.pica[discKey]) * numRods * 3;
-            
-            // Llistar parallamps
-            const rodsList = lightningRods.map((rod, i) => {
-                const modelData = allModels[rod.type].models[rod.model];
-                const latlng = rod.marker.getLatLng();
-                return `  ${i+1}. ${rod.model} | Nivell ${['I','II','III','IV'][rod.level-1]} | Radi ${modelData.radii[rod.level]}m | ${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)}`;
-            }).join('\n');
-            
-            const today = new Date().toLocaleDateString('ca-ES');
-            
-            // Generar assumpte i cos de l'email
-            const subject = `[OPORTUNITAT] ${clientCode} - ${projectName} - ${totalNet.toFixed(2)}€`;
-            
-            const body = `---DADES_CRM---
-TIPUS: OPORTUNITAT_PARALLAMPS
-DATA: ${today}
-CODI_CLIENT: ${clientCode}
-CLIENT_NOM: ${clientName}
-CLIENT_EMAIL: ${clientEmail}
-CLIENT_TELEFON: ${clientPhone}
-CLIENT_POBLACIO: ${clientCity}
-PROJECTE_NOM: ${projectName}
-ALCADA_EDIFICI: ${height}
-DESCOMPTE_TIPUS: ${discLabel}
-NUM_PARALLAMPS: ${numRods}
-TOTAL_NET: ${totalNet.toFixed(2)}
----FI_DADES---
-
-═══════════════════════════════════════
-   OPORTUNITAT DE VENDA - PARALLAMPS
-═══════════════════════════════════════
-
-📋 DADES DEL CLIENT
-   Codi: ${clientCode}
-   Nom: ${clientName || 'No indicat'}
-   Email: ${clientEmail || 'No indicat'}
-   Telèfon: ${clientPhone || 'No indicat'}
-   Població: ${clientCity || 'No indicada'}
-
-📍 PROJECTE
-   Nom: ${projectName}
-   Alçada edifici: ${height}m
-   Descompte: ${discLabel}
-
-⚡ PARALLAMPS (${numRods})
-${rodsList}
-
-💰 IMPORT TOTAL NET: ${totalNet.toFixed(2)} € (IVA no inclòs)
-
-📝 NOTES
-${notes || 'Cap nota addicional'}
-
-───────────────────────────────────────
-Generat automàticament des de l'eina de cobertura INGESCO
-${today}
-`;
-            
-            // Obrir client d'email
-            const mailtoLink = `mailto:oportunitats@ingesco.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            
-            window.open(mailtoLink, '_blank');
-            
-            closeCRMPanel();
-            
-            // Mostrar missatge de confirmació
-            setTimeout(() => {
-                alert('✅ S\'ha obert el client d\'email amb les dades.\n\n⚠️ Recorda adjuntar el PDF del pressupost abans d\'enviar!');
-            }, 500);
         }
         
         function updateBudgetCalc() {
