@@ -178,18 +178,17 @@
         
         .draw-mode-indicator {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 80px;
+            left: 20px;
             background: rgba(39, 174, 96, 0.95);
             color: white;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1.1em;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.95em;
             font-weight: bold;
             z-index: 2000;
             display: none;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 3px 15px rgba(0,0,0,0.3);
         }
         .draw-mode-indicator.show { display: block; }
         
@@ -716,7 +715,10 @@
         // ============================================
         // INICIALITZAR MAPA
         // ============================================
-        const map = L.map('map').setView([initialLat, initialLng], 17);
+        const map = L.map('map', {
+            preferCanvas: false,
+            renderer: L.svg({ padding: 2 })
+        }).setView([initialLat, initialLng], 17);
         
         const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: '&copy; Esri'
@@ -1726,7 +1728,8 @@ ${today}
                         color: '#3498db',
                         fillColor: '#3498db',
                         fillOpacity: 0.3,
-                        weight: 2
+                        weight: 2,
+                        smoothFactor: 0
                     }
                 },
                 rectangle: {
@@ -1737,7 +1740,8 @@ ${today}
                         color: '#3498db',
                         fillColor: '#3498db',
                         fillOpacity: 0.3,
-                        weight: 2
+                        weight: 2,
+                        smoothFactor: 0
                     }
                 }
             },
@@ -1796,7 +1800,23 @@ ${today}
         
         // Event quan es crea un edifici
         map.on(L.Draw.Event.CREATED, function(e) {
-            const layer = e.layer;
+            let layer = e.layer;
+            
+            // Guardar coordenades originals per evitar deformació
+            if (layer instanceof L.Rectangle) {
+                layer._originalBounds = layer.getBounds();
+            } else {
+                const latlngs = layer.getLatLngs();
+                if (Array.isArray(latlngs[0])) {
+                    layer._originalLatLngs = latlngs[0].map(ll => [ll.lat, ll.lng]);
+                } else {
+                    layer._originalLatLngs = latlngs.map(ll => [ll.lat, ll.lng]);
+                }
+            }
+            
+            layer.options.smoothFactor = 0;
+            layer.options.noClip = true;
+            
             buildingsLayer.addLayer(layer);
             buildings.push(layer);
             
@@ -1807,6 +1827,18 @@ ${today}
             document.getElementById('measureDisplay').classList.remove('show');
             
             stopDrawing();
+        });
+        
+        // Forçar redibuixat dels edificis quan canvia el zoom
+        map.on('zoomend', function() {
+            buildings.forEach(layer => {
+                if (layer._originalLatLngs) {
+                    const newLatLngs = layer._originalLatLngs.map(ll => L.latLng(ll[0], ll[1]));
+                    layer.setLatLngs(newLatLngs);
+                } else if (layer._originalBounds) {
+                    layer.setBounds(layer._originalBounds);
+                }
+            });
         });
         
         // Event quan es dibuixa (temps real)
@@ -1952,7 +1984,9 @@ ${today}
                 color: color,
                 fillColor: color,
                 fillOpacity: 0.3,
-                weight: 3
+                weight: 3,
+                smoothFactor: 0,
+                noClip: true
             });
             
             const bounds = layer.getBounds();
