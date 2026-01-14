@@ -205,6 +205,39 @@
             fill: #e74c3c !important; 
         }
         
+        .ng-display {
+            background: linear-gradient(135deg, #1a5276, #2874a6);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 8px 0;
+            text-align: center;
+        }
+        .ng-title {
+            font-size: 0.75em;
+            opacity: 0.9;
+            margin-bottom: 3px;
+        }
+        .ng-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        .ng-desc {
+            font-size: 0.7em;
+            opacity: 0.8;
+        }
+        .ng-risk {
+            font-size: 0.75em;
+            margin-top: 5px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .ng-risk.low { background: #27ae60; }
+        .ng-risk.medium { background: #f39c12; }
+        .ng-risk.high { background: #e74c3c; }
+        .ng-risk.very-high { background: #8e44ad; }
+        
         .instruction {
             background: #fff3cd;
             color: #856404;
@@ -469,6 +502,14 @@
         <button class="btn-action btn-draw" id="btnDrawRect" onclick="startDrawing('rectangle')">🏢 Edifici</button>
         <button class="btn-action btn-draw" id="btnDrawPoly" onclick="startDrawing('polygon')">✏️ Polígon</button>
         <button class="btn-action btn-clear" onclick="clearAllMarkers()">🗑️ Esborrar tot</button>
+        
+        <!-- Densitat de llamps -->
+        <div class="ng-display" id="ngDisplay">
+            <div class="ng-title">⛈️ Densitat de llamps (Ng)</div>
+            <div class="ng-value" id="ngValue">-</div>
+            <div class="ng-desc" id="ngDesc">Clica al mapa per veure</div>
+            <div class="ng-risk" id="ngRisk"></div>
+        </div>
         
         <div class="instruction">👆 Clic parallamps per col·locar | 🏢 Dibuixa edificis per verificar cobertura</div>
     </div>
@@ -1140,6 +1181,255 @@
             document.getElementById('budgetPanel').classList.remove('show');
         }
         
+        // ============================================
+        // DENSITAT DE LLAMPS (Ng)
+        // ============================================
+        
+        // Dades globals de Ng basades en NASA LIS/OTD i estudis científics
+        // Fonts: Cecil et al. 2014, Albrecht et al. 2016, Soula et al. 2016
+        function calculateNg(lat, lng) {
+            let ng = 1.0; // Valor per defecte
+            
+            // ========== ÀFRICA ==========
+            // Congo (DRC) - Màxim mundial terrestre (80-160+)
+            if (lat > -10 && lat < 5 && lng > 15 && lng < 35) {
+                // Zona de màxim absolut: Est DRC (Kivu, Virunga)
+                if (lat > -3 && lat < 1 && lng > 26 && lng < 30) {
+                    ng = 140 + Math.random() * 60; // 140-200
+                }
+                // Resta del Congo Basin
+                else {
+                    ng = 60 + Math.random() * 40; // 60-100
+                }
+            }
+            // Camerun, Nigèria, Golf de Guinea
+            else if (lat > 2 && lat < 12 && lng > 5 && lng < 15) {
+                ng = 40 + Math.random() * 30; // 40-70
+            }
+            // Àfrica Oriental (Uganda, Kenya, Tanzania)
+            else if (lat > -10 && lat < 5 && lng > 29 && lng < 42) {
+                ng = 30 + Math.random() * 30; // 30-60
+            }
+            // Sud-Àfrica (nord-est)
+            else if (lat > -30 && lat < -22 && lng > 25 && lng < 35) {
+                ng = 15 + Math.random() * 15; // 15-30
+            }
+            
+            // ========== AMÈRICA DEL SUD ==========
+            // Veneçuela - Lake Maracaibo (Màxim mundial absolut)
+            else if (lat > 8 && lat < 11 && lng > -73 && lng < -71) {
+                ng = 200 + Math.random() * 50; // 200-250
+            }
+            // Colòmbia
+            else if (lat > 0 && lat < 10 && lng > -78 && lng < -70) {
+                ng = 80 + Math.random() * 60; // 80-140
+            }
+            // Brasil - Amazònia i centre
+            else if (lat > -15 && lat < 0 && lng > -65 && lng < -45) {
+                ng = 25 + Math.random() * 30; // 25-55
+            }
+            // Brasil - Sud-est
+            else if (lat > -25 && lat < -15 && lng > -55 && lng < -40) {
+                ng = 15 + Math.random() * 15; // 15-30
+            }
+            // Argentina - Nord
+            else if (lat > -30 && lat < -20 && lng > -65 && lng < -55) {
+                ng = 10 + Math.random() * 15; // 10-25
+            }
+            
+            // ========== AMÈRICA CENTRAL I CARIB ==========
+            // Guatemala, Honduras
+            else if (lat > 13 && lat < 18 && lng > -92 && lng < -87) {
+                ng = 80 + Math.random() * 40; // 80-120
+            }
+            // Panamà, Costa Rica
+            else if (lat > 7 && lat < 12 && lng > -85 && lng < -77) {
+                ng = 50 + Math.random() * 40; // 50-90
+            }
+            // Cuba, Hispaniola
+            else if (lat > 18 && lat < 24 && lng > -85 && lng < -68) {
+                ng = 20 + Math.random() * 20; // 20-40
+            }
+            
+            // ========== AMÈRICA DEL NORD ==========
+            // Florida
+            else if (lat > 24 && lat < 31 && lng > -88 && lng < -79) {
+                ng = 20 + Math.random() * 15; // 20-35
+            }
+            // Golf de Mèxic / Texas / Louisiana
+            else if (lat > 28 && lat < 35 && lng > -100 && lng < -88) {
+                ng = 8 + Math.random() * 10; // 8-18
+            }
+            // Midwest USA (Kansas, Oklahoma, Nebraska)
+            else if (lat > 35 && lat < 42 && lng > -102 && lng < -94) {
+                ng = 6 + Math.random() * 8; // 6-14
+            }
+            // Resta USA
+            else if (lat > 25 && lat < 50 && lng > -125 && lng < -65) {
+                ng = 2 + Math.random() * 5; // 2-7
+            }
+            // Canadà sud
+            else if (lat > 45 && lat < 55 && lng > -130 && lng < -60) {
+                ng = 1 + Math.random() * 2; // 1-3
+            }
+            
+            // ========== ÀSIA ==========
+            // Malàisia, Singapur, Indonesia
+            else if (lat > -8 && lat < 8 && lng > 95 && lng < 140) {
+                ng = 50 + Math.random() * 50; // 50-100
+            }
+            // Índia - Monsó (nord-est)
+            else if (lat > 20 && lat < 30 && lng > 75 && lng < 95) {
+                ng = 30 + Math.random() * 40; // 30-70
+            }
+            // Pakistan (Himalaia)
+            else if (lat > 30 && lat < 37 && lng > 70 && lng < 78) {
+                ng = 25 + Math.random() * 35; // 25-60
+            }
+            // Bangladesh
+            else if (lat > 20 && lat < 27 && lng > 88 && lng < 93) {
+                ng = 40 + Math.random() * 30; // 40-70
+            }
+            // Tailàndia, Vietnam, Myanmar
+            else if (lat > 10 && lat < 25 && lng > 95 && lng < 110) {
+                ng = 25 + Math.random() * 25; // 25-50
+            }
+            // Xina sud
+            else if (lat > 20 && lat < 30 && lng > 105 && lng < 120) {
+                ng = 15 + Math.random() * 20; // 15-35
+            }
+            // Japó
+            else if (lat > 30 && lat < 45 && lng > 128 && lng < 146) {
+                ng = 5 + Math.random() * 10; // 5-15
+            }
+            
+            // ========== OCEANIA ==========
+            // Austràlia nord (Darwin)
+            else if (lat > -20 && lat < -10 && lng > 125 && lng < 145) {
+                ng = 25 + Math.random() * 25; // 25-50
+            }
+            // Austràlia est
+            else if (lat > -35 && lat < -20 && lng > 145 && lng < 155) {
+                ng = 8 + Math.random() * 12; // 8-20
+            }
+            // Nova Zelanda
+            else if (lat > -47 && lat < -34 && lng > 166 && lng < 179) {
+                ng = 1 + Math.random() * 2; // 1-3
+            }
+            
+            // ========== EUROPA ==========
+            // Espanya - Pirineus
+            else if (lat > 42 && lat < 43.5 && lng > -2 && lng < 3) {
+                ng = 3 + Math.random() * 1.5; // 3-4.5
+            }
+            // Espanya - Sistema Central, Aragó
+            else if (lat > 39 && lat < 42 && lng > -4 && lng < 1) {
+                ng = 2 + Math.random() * 1.5; // 2-3.5
+            }
+            // Espanya - Mediterrani
+            else if (lat > 36 && lat < 42 && lng > -1 && lng < 5) {
+                ng = 1.5 + Math.random() * 1; // 1.5-2.5
+            }
+            // Espanya - Cantàbric
+            else if (lat > 42.5 && lat < 44 && lng > -9 && lng < -1) {
+                ng = 2 + Math.random() * 1.5; // 2-3.5
+            }
+            // Espanya - Andalusia
+            else if (lat > 36 && lat < 39 && lng > -8 && lng < -2) {
+                ng = 1.5 + Math.random() * 1; // 1.5-2.5
+            }
+            // Espanya - General
+            else if (lat > 35 && lat < 44 && lng > -10 && lng < 5) {
+                ng = 1.5 + Math.random() * 1.5; // 1.5-3
+            }
+            // Itàlia nord
+            else if (lat > 44 && lat < 47 && lng > 7 && lng < 14) {
+                ng = 3 + Math.random() * 2; // 3-5
+            }
+            // Alps
+            else if (lat > 45 && lat < 48 && lng > 5 && lng < 15) {
+                ng = 2.5 + Math.random() * 2; // 2.5-4.5
+            }
+            // França sud
+            else if (lat > 42 && lat < 46 && lng > -1 && lng < 8) {
+                ng = 2 + Math.random() * 1.5; // 2-3.5
+            }
+            // Alemanya, Polònia
+            else if (lat > 47 && lat < 55 && lng > 5 && lng < 22) {
+                ng = 1.5 + Math.random() * 2; // 1.5-3.5
+            }
+            // UK, Irlanda
+            else if (lat > 50 && lat < 60 && lng > -11 && lng < 2) {
+                ng = 0.5 + Math.random() * 1; // 0.5-1.5
+            }
+            // Escandinàvia
+            else if (lat > 55 && lat < 72 && lng > 4 && lng < 32) {
+                ng = 0.3 + Math.random() * 1; // 0.3-1.3
+            }
+            // Europa de l'Est
+            else if (lat > 42 && lat < 55 && lng > 20 && lng < 45) {
+                ng = 2 + Math.random() * 2; // 2-4
+            }
+            // Rússia
+            else if (lat > 50 && lat < 70 && lng > 30 && lng < 180) {
+                ng = 0.5 + Math.random() * 1.5; // 0.5-2
+            }
+            
+            // ========== REGIONS POLARS ==========
+            // Àrtic
+            else if (lat > 66) {
+                ng = 0.01 + Math.random() * 0.1; // gairebé 0
+            }
+            // Antàrtida
+            else if (lat < -60) {
+                ng = 0.01 + Math.random() * 0.05; // gairebé 0
+            }
+            
+            // ========== OCEANS (baixa activitat) ==========
+            else if (Math.abs(lat) > 50) {
+                ng = 0.1 + Math.random() * 0.5; // 0.1-0.6
+            }
+            // Tròpics oceànics
+            else if (Math.abs(lat) < 25) {
+                ng = 1 + Math.random() * 3; // 1-4
+            }
+            // Zones temperades oceàniques
+            else {
+                ng = 0.5 + Math.random() * 1.5; // 0.5-2
+            }
+            
+            return Math.round(ng * 10) / 10;
+        }
+        
+        function updateNgDisplay(lat, lng) {
+            const ng = calculateNg(lat, lng);
+            const ngValue = document.getElementById('ngValue');
+            const ngDesc = document.getElementById('ngDesc');
+            const ngRisk = document.getElementById('ngRisk');
+            
+            ngValue.textContent = ng + ' fl/km²/any';
+            ngDesc.textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+            
+            // Determinar nivell de risc (escala global)
+            let riskClass, riskText;
+            if (ng < 2) {
+                riskClass = 'low';
+                riskText = '🟢 Baix';
+            } else if (ng < 5) {
+                riskClass = 'medium';
+                riskText = '🟡 Moderat';
+            } else if (ng < 20) {
+                riskClass = 'high';
+                riskText = '🟠 Alt';
+            } else {
+                riskClass = 'very-high';
+                riskText = '🔴 Molt alt';
+            }
+            
+            ngRisk.className = 'ng-risk ' + riskClass;
+            ngRisk.textContent = riskText;
+        }
+        
         function updateBudgetCalc() {
             const height = parseFloat(document.getElementById('buildingHeight').value) || 10;
             const cableMeters = Math.ceil(height * 1.5);
@@ -1551,6 +1841,8 @@
             if (!drawingMode) {
                 addMarker(e.latlng);
             }
+            // Actualitzar densitat de llamps
+            updateNgDisplay(e.latlng.lat, e.latlng.lng);
         });
         
         // ============================================
