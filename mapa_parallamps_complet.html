@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculador de Cobertura - Parallamps Ingesco</title>
+    <title>Calculador de Cobertura + CRM - Parallamps Ingesco</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -170,6 +170,8 @@
         .btn-clear:hover { background: #c0392b; }
         .btn-pdf { background: #8e44ad; }
         .btn-pdf:hover { background: #7d3c98; }
+        .btn-crm { background: #e67e22; }
+        .btn-crm:hover { background: #d35400; }
         .btn-draw { background: #27ae60; }
         .btn-draw:hover { background: #1e8449; }
         .btn-draw.active { background: #1e8449; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
@@ -417,7 +419,7 @@
 <body>
     <div class="header">
         <h1>⚡ Calculador de Cobertura - Parallamps Ingesco</h1>
-        <div class="header-info">Segons UNE 21186:2011 / NFC 17-102:2011</div>
+        <div class="header-info">Segons UNE 21186:2011 / NFC 17-102:2011 | 🔗 Integració Sage CRM</div>
     </div>
     
     <div class="control-panel">
@@ -459,12 +461,12 @@
         </div>
         
         <button class="btn-action btn-pdf" onclick="openBudgetPanel('image')">🗺️ Imprimir Mapa</button>
-        <button class="btn-action btn-pdf" onclick="openBudgetPanel('full')">📄 Mapa + Pressupost</button>
+        <button class="btn-action btn-pdf" onclick="openBudgetPanel('full')">📄 Mapa i Llista de Materials</button>
         <button class="btn-action btn-draw" id="btnDrawRect" onclick="startDrawing('rectangle')">🏢 Edifici</button>
         <button class="btn-action btn-draw" id="btnDrawPoly" onclick="startDrawing('polygon')">✏️ Polígon</button>
         <button class="btn-action btn-clear" onclick="clearAllMarkers()">🗑️ Esborrar tot</button>
         
-        <div class="instruction">👆 Clic parallamps | 🏢 Dibuixa edificis | ✅ Verd=Protegit</div>
+        <div class="instruction">👆 Clic parallamps | 🏢 Dibuixa edificis | 📧 Envia a Sage CRM</div>
     </div>
     
     <div id="map"></div>
@@ -476,7 +478,7 @@
     </div>
     
     <!-- Panel Pressupost -->
-    <div class="overlay" id="overlay" onclick="closeBudgetPanel()"></div>
+    <div class="overlay" id="overlay" onclick="closeAllPanels()"></div>
     <div class="budget-panel" id="budgetPanel">
         <h3 id="budgetPanelTitle">📄 Generar PDF</h3>
         <div class="budget-form">
@@ -519,6 +521,73 @@
         <div class="budget-buttons">
             <button class="btn-cancel" onclick="closeBudgetPanel()">Cancel·lar</button>
             <button class="btn-generate" id="generatePdfBtn" onclick="generatePDF()">📥 Generar PDF</button>
+        </div>
+    </div>
+    
+    <!-- Panel CRM -->
+    <div class="budget-panel" id="crmPanel">
+        <h3>📧 Enviar Oportunitat a CRM</h3>
+        <div class="budget-form">
+            <div style="background: #fff3cd; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85em; color: #856404;">
+                ℹ️ Les dades s'enviaran a <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a1ced1ced3d5d4cfc8d5c0d5d2e1c8cfc6c4d2c2ce8fc2cecc">[email&#160;protected]</a></strong> per crear una oportunitat a Sage CRM.
+            </div>
+            
+            <div class="budget-row">
+                <label>Codi client (6 dígits): *</label>
+                <input type="text" id="crmClientCode" placeholder="000000" maxlength="6" pattern="[0-9]{6}" style="font-family: monospace; font-size: 1.1em; letter-spacing: 2px;">
+            </div>
+            <div class="budget-row">
+                <label>Nom del client:</label>
+                <input type="text" id="crmClientName" placeholder="(opcional, referència)">
+            </div>
+            <div class="budget-row">
+                <label>Email del client:</label>
+                <input type="email" id="crmClientEmail" placeholder="email@exemple.com">
+            </div>
+            <div class="budget-row">
+                <label>Telèfon:</label>
+                <input type="tel" id="crmClientPhone" placeholder="123 456 789">
+            </div>
+            <div class="budget-row">
+                <label>Població:</label>
+                <input type="text" id="crmClientCity" placeholder="Ciutat...">
+            </div>
+            <div class="budget-row">
+                <label>Nom del projecte: *</label>
+                <input type="text" id="crmProjectName" placeholder="Hotel Arucas...">
+            </div>
+            <div class="budget-row">
+                <label>Alçada edifici (m):</label>
+                <input type="number" id="crmBuildingHeight" value="10" min="2" max="100">
+            </div>
+            <div class="budget-row">
+                <label>Tipus de descompte:</label>
+            </div>
+            <div class="budget-row" style="justify-content: center;">
+                <div class="discount-option">
+                    <input type="radio" name="crmDiscount" id="crmDiscInstaller" value="installer" checked>
+                    <label for="crmDiscInstaller">🔧 Instal·lador<br><small>(40+7)</small></label>
+                    <input type="radio" name="crmDiscount" id="crmDiscDistributor" value="distributor">
+                    <label for="crmDiscDistributor">🏪 Distribuïdor<br><small>(50+7)</small></label>
+                </div>
+            </div>
+            <div class="budget-row">
+                <label>Notes addicionals:</label>
+            </div>
+            <div class="budget-row">
+                <textarea id="crmNotes" rows="3" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9em;" placeholder="Observacions, urgència, etc..."></textarea>
+            </div>
+            
+            <div style="background: #e8f4f8; padding: 10px; border-radius: 8px; margin-top: 10px;">
+                <div style="font-size: 0.8em; color: #1a5276; font-weight: bold; margin-bottom: 5px;">📊 Resum automàtic:</div>
+                <div style="font-size: 0.85em; color: #333;" id="crmSummary">
+                    <!-- Es genera dinàmicament -->
+                </div>
+            </div>
+        </div>
+        <div class="budget-buttons">
+            <button class="btn-cancel" onclick="closeCRMPanel()">Cancel·lar</button>
+            <button class="btn-generate" style="background: #e67e22;" onclick="sendToCRM()">📧 Generar Email</button>
         </div>
     </div>
     
@@ -574,7 +643,7 @@
         </div>
     </div>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // ============================================
         // DADES DELS PARALLAMPS INGESCO
         // ============================================
@@ -983,7 +1052,7 @@
                 budgetFields.style.display = 'none';
                 generateBtn.textContent = '📥 Generar Mapa PDF';
             } else {
-                title.textContent = '📄 Mapa + Pressupost';
+                title.textContent = '📄 Mapa i Llista de Materials';
                 budgetFields.style.display = 'block';
                 generateBtn.textContent = '📥 Generar PDF Complet';
             }
@@ -1005,6 +1074,218 @@
         function closeBudgetPanel() {
             document.getElementById('overlay').classList.remove('show');
             document.getElementById('budgetPanel').classList.remove('show');
+        }
+        
+        function closeAllPanels() {
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('budgetPanel').classList.remove('show');
+            document.getElementById('crmPanel').classList.remove('show');
+        }
+        
+        // ============================================
+        // FUNCIONS CRM
+        // ============================================
+        
+        function openCRMPanel() {
+            // Actualitzar resum
+            updateCRMSummary();
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('crmPanel').classList.add('show');
+        }
+        
+        function closeCRMPanel() {
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('crmPanel').classList.remove('show');
+        }
+        
+        function updateCRMSummary() {
+            const height = parseFloat(document.getElementById('crmBuildingHeight').value) || 10;
+            const cableMeters = Math.ceil(height * 1.5);
+            const discountType = document.querySelector('input[name="crmDiscount"]:checked').value;
+            const isDistributor = discountType === 'distributor';
+            const discKey = isDistributor ? 'disc2' : 'disc1';
+            const pararrayosDisc = isDistributor ? '50+7' : '40+7';
+            
+            // Calcular total
+            let totalNet = 0;
+            const numRods = lightningRods.length || 1;
+            const mastil = height > 15 ? productCatalog.mastil6m : productCatalog.mastil4m;
+            const clampCount = cableMeters * 3;
+            
+            // Parallamps
+            lightningRods.forEach(rod => {
+                const modelData = allModels[rod.type].models[rod.model];
+                totalNet += applyDiscount(modelData.price, pararrayosDisc);
+            });
+            
+            // Accessoris
+            totalNet += applyDiscount(productCatalog.piezaAdapt.price, productCatalog.piezaAdapt[discKey]) * numRods;
+            totalNet += applyDiscount(mastil.price, mastil[discKey]) * numRods;
+            totalNet += applyDiscount(productCatalog.anclaje.price, productCatalog.anclaje[discKey]) * numRods * 2;
+            totalNet += applyDiscount(productCatalog.cableCobre.price, productCatalog.cableCobre[discKey]) * cableMeters * numRods * 2;
+            totalNet += applyDiscount(productCatalog.abrazadera.price, productCatalog.abrazadera[discKey]) * clampCount * numRods;
+            totalNet += applyDiscount(productCatalog.contador.price, productCatalog.contador[discKey]) * numRods;
+            totalNet += applyDiscount(productCatalog.tuboProtec.price, productCatalog.tuboProtec[discKey]) * numRods;
+            totalNet += applyDiscount(productCatalog.senal.price, productCatalog.senal[discKey]) * numRods;
+            totalNet += applyDiscount(productCatalog.arqueta.price, productCatalog.arqueta[discKey]) * numRods;
+            totalNet += applyDiscount(productCatalog.barraEquip.price, productCatalog.barraEquip[discKey]) * numRods;
+            totalNet += applyDiscount(productCatalog.pica.price, productCatalog.pica[discKey]) * numRods * 3;
+            
+            // Generar llista de parallamps
+            let rodsText = '';
+            if (lightningRods.length === 0) {
+                rodsText = '<em>Cap parallamps col·locat</em>';
+            } else {
+                const rodsByModel = {};
+                lightningRods.forEach(rod => {
+                    const key = rod.model;
+                    if (!rodsByModel[key]) rodsByModel[key] = { model: rod.model, level: rod.level, count: 0 };
+                    rodsByModel[key].count++;
+                });
+                rodsText = Object.values(rodsByModel).map(r => 
+                    `<strong>${r.count}x ${r.model}</strong> (Nivell ${['I','II','III','IV'][r.level-1]})`
+                ).join('<br>');
+            }
+            
+            document.getElementById('crmSummary').innerHTML = `
+                ${rodsText}<br>
+                <hr style="border:none;border-top:1px solid #ccc;margin:8px 0;">
+                Cable: ${cableMeters * numRods * 2}m | Abraçaderes: ${clampCount * numRods}<br>
+                <strong style="color: #e67e22; font-size: 1.1em;">TOTAL NET: ${totalNet.toFixed(2)} €</strong>
+            `;
+        }
+        
+        // Actualitzar resum quan canvien els camps
+        document.addEventListener('change', function(e) {
+            if (e.target.id === 'crmBuildingHeight' || e.target.name === 'crmDiscount') {
+                if (document.getElementById('crmPanel').classList.contains('show')) {
+                    updateCRMSummary();
+                }
+            }
+        });
+        
+        function sendToCRM() {
+            const clientCode = document.getElementById('crmClientCode').value.trim();
+            const clientName = document.getElementById('crmClientName').value.trim();
+            const clientEmail = document.getElementById('crmClientEmail').value.trim();
+            const clientPhone = document.getElementById('crmClientPhone').value.trim();
+            const clientCity = document.getElementById('crmClientCity').value.trim();
+            const projectName = document.getElementById('crmProjectName').value.trim();
+            const height = parseFloat(document.getElementById('crmBuildingHeight').value) || 10;
+            const notes = document.getElementById('crmNotes').value.trim();
+            const discountType = document.querySelector('input[name="crmDiscount"]:checked').value;
+            
+            // Validació
+            if (!clientCode || clientCode.length !== 6 || !/^\d{6}$/.test(clientCode)) {
+                alert('⚠️ Cal introduir un codi de client vàlid (6 dígits numèrics)');
+                document.getElementById('crmClientCode').focus();
+                return;
+            }
+            if (!projectName) {
+                alert('⚠️ Cal introduir el nom del projecte');
+                document.getElementById('crmProjectName').focus();
+                return;
+            }
+            if (lightningRods.length === 0) {
+                alert('⚠️ Cal col·locar almenys un parallamps al mapa');
+                return;
+            }
+            
+            // Calcular dades
+            const cableMeters = Math.ceil(height * 1.5);
+            const isDistributor = discountType === 'distributor';
+            const discKey = isDistributor ? 'disc2' : 'disc1';
+            const discLabel = isDistributor ? 'Distribuïdor (50+7)' : 'Instal·lador (40+7)';
+            const pararrayosDisc = isDistributor ? '50+7' : '40+7';
+            const numRods = lightningRods.length;
+            const mastil = height > 15 ? productCatalog.mastil6m : productCatalog.mastil4m;
+            const clampCount = cableMeters * 3;
+            
+            // Calcular total
+            let totalNet = 0;
+            lightningRods.forEach(rod => {
+                const modelData = allModels[rod.type].models[rod.model];
+                totalNet += applyDiscount(modelData.price, pararrayosDisc);
+            });
+            totalNet += applyDiscount(productCatalog.piezaAdapt.price, productCatalog.piezaAdapt[discKey]) * numRods;
+            totalNet += applyDiscount(mastil.price, mastil[discKey]) * numRods;
+            totalNet += applyDiscount(productCatalog.anclaje.price, productCatalog.anclaje[discKey]) * numRods * 2;
+            totalNet += applyDiscount(productCatalog.cableCobre.price, productCatalog.cableCobre[discKey]) * cableMeters * numRods * 2;
+            totalNet += applyDiscount(productCatalog.abrazadera.price, productCatalog.abrazadera[discKey]) * clampCount * numRods;
+            totalNet += applyDiscount(productCatalog.contador.price, productCatalog.contador[discKey]) * numRods;
+            totalNet += applyDiscount(productCatalog.tuboProtec.price, productCatalog.tuboProtec[discKey]) * numRods;
+            totalNet += applyDiscount(productCatalog.senal.price, productCatalog.senal[discKey]) * numRods;
+            totalNet += applyDiscount(productCatalog.arqueta.price, productCatalog.arqueta[discKey]) * numRods;
+            totalNet += applyDiscount(productCatalog.barraEquip.price, productCatalog.barraEquip[discKey]) * numRods;
+            totalNet += applyDiscount(productCatalog.pica.price, productCatalog.pica[discKey]) * numRods * 3;
+            
+            // Llistar parallamps
+            const rodsList = lightningRods.map((rod, i) => {
+                const modelData = allModels[rod.type].models[rod.model];
+                const latlng = rod.marker.getLatLng();
+                return `  ${i+1}. ${rod.model} | Nivell ${['I','II','III','IV'][rod.level-1]} | Radi ${modelData.radii[rod.level]}m | ${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)}`;
+            }).join('\n');
+            
+            const today = new Date().toLocaleDateString('ca-ES');
+            
+            // Generar assumpte i cos de l'email
+            const subject = `[OPORTUNITAT] ${clientCode} - ${projectName} - ${totalNet.toFixed(2)}€`;
+            
+            const body = `---DADES_CRM---
+TIPUS: OPORTUNITAT_PARALLAMPS
+DATA: ${today}
+CODI_CLIENT: ${clientCode}
+CLIENT_NOM: ${clientName}
+CLIENT_EMAIL: ${clientEmail}
+CLIENT_TELEFON: ${clientPhone}
+CLIENT_POBLACIO: ${clientCity}
+PROJECTE_NOM: ${projectName}
+ALCADA_EDIFICI: ${height}
+DESCOMPTE_TIPUS: ${discLabel}
+NUM_PARALLAMPS: ${numRods}
+TOTAL_NET: ${totalNet.toFixed(2)}
+---FI_DADES---
+
+═══════════════════════════════════════
+   OPORTUNITAT DE VENDA - PARALLAMPS
+═══════════════════════════════════════
+
+📋 DADES DEL CLIENT
+   Codi: ${clientCode}
+   Nom: ${clientName || 'No indicat'}
+   Email: ${clientEmail || 'No indicat'}
+   Telèfon: ${clientPhone || 'No indicat'}
+   Població: ${clientCity || 'No indicada'}
+
+📍 PROJECTE
+   Nom: ${projectName}
+   Alçada edifici: ${height}m
+   Descompte: ${discLabel}
+
+⚡ PARALLAMPS (${numRods})
+${rodsList}
+
+💰 IMPORT TOTAL NET: ${totalNet.toFixed(2)} € (IVA no inclòs)
+
+📝 NOTES
+${notes || 'Cap nota addicional'}
+
+───────────────────────────────────────
+Generat automàticament des de l'eina de cobertura INGESCO
+${today}
+`;
+            
+            // Obrir client d'email
+            const mailtoLink = `mailto:oportunitats@ingesco.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            
+            window.open(mailtoLink, '_blank');
+            
+            closeCRMPanel();
+            
+            // Mostrar missatge de confirmació
+            setTimeout(() => {
+                alert('✅ S\'ha obert el client d\'email amb les dades.\n\n⚠️ Recorda adjuntar el PDF del pressupost abans d\'enviar!');
+            }, 500);
         }
         
         function updateBudgetCalc() {
@@ -1035,6 +1316,20 @@
             generateBtn.disabled = true;
             
             try {
+                // Centrar el mapa als parallamps abans de capturar
+                if (lightningRods.length > 0) {
+                    const bounds = L.latLngBounds();
+                    lightningRods.forEach(rod => {
+                        bounds.extend(rod.marker.getLatLng());
+                        bounds.extend(rod.circle.getBounds());
+                    });
+                    buildings.forEach(building => {
+                        bounds.extend(building.getBounds());
+                    });
+                    map.fitBounds(bounds, { padding: [30, 30] });
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                
                 // Capturar el mapa
                 const mapElement = document.getElementById('map');
                 const canvas = await html2canvas(mapElement, {
@@ -1197,19 +1492,13 @@
                 doc.text('Segons UNE 21186:2011 / NFC 17-102:2011 / NP 4426:2013', 15, y + 4);
                 
                 // ==========================================
-                // PÀGINA 2: PRESSUPOST (només si mode = 'full')
+                // PÀGINA 2: LLISTA DE MATERIALS (només si mode = 'full')
                 // ==========================================
                 
                 if (pdfMode === 'full') {
                     const height = parseFloat(document.getElementById('buildingHeight').value) || 10;
                     const cableMeters = Math.ceil(height * 1.5);
                     const clampCount = cableMeters * 3;
-                    const discountType = document.querySelector('input[name="discount"]:checked').value;
-                    
-                    const isDistributor = discountType === 'distributor';
-                    const discKey = isDistributor ? 'disc2' : 'disc1';
-                    const discLabel = isDistributor ? 'Distribuïdor (50+7)' : 'Instal·lador (40+7)';
-                    const pararrayosDisc = isDistributor ? '50+7' : '40+7';
                     
                     // Determinar màstil segons alçada
                     const mastil = height > 15 ? productCatalog.mastil6m : productCatalog.mastil4m;
@@ -1224,7 +1513,7 @@
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(16);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('Pressupost Detallat', 15, 15);
+                    doc.text('Llista de Materials', 15, 15);
                     doc.setFontSize(9);
                     doc.setFont('helvetica', 'normal');
                     doc.text(`Ref: ${clientRef}`, pageWidth - 15, 15, { align: 'right' });
@@ -1234,9 +1523,9 @@
                     // Info addicional
                     doc.setTextColor(0, 0, 0);
                     doc.setFontSize(9);
-                    doc.text(`Alçada edifici: ${height}m | Descompte: ${discLabel}`, 15, y);
+                    doc.text(`Alçada edifici: ${height}m`, 15, y);
                     
-                    y += 10;
+                    y += 12;
                     
                     // Títol taula
                     doc.setFillColor(46, 134, 171);
@@ -1248,22 +1537,20 @@
                     
                     y += 12;
                     
-                    // Capçalera taula
+                    // Capçalera taula (sense preus)
                     doc.setFillColor(240, 240, 240);
                     doc.rect(15, y, pageWidth - 30, 7, 'F');
                     doc.setTextColor(0, 0, 0);
                     doc.setFontSize(8);
-                    doc.text('Producte', 17, y + 5);
-                    doc.text('Ref.', 100, y + 5);
-                    doc.text('Qty', 120, y + 5);
-                    doc.text('PVP', 135, y + 5);
-                    doc.text('Dto.', 155, y + 5);
-                    doc.text('Total', 175, y + 5);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Material', 17, y + 5);
+                    doc.text('Referència', 120, y + 5);
+                    doc.text('Quantitat', 165, y + 5);
                     
                     y += 10;
                     
-                    // Generar línies del pressupost basades en els parallamps reals
-                    const lines = [];
+                    // Generar línies de materials
+                    const materials = [];
                     
                     // Agrupar parallamps per model
                     const rodsByModel = {};
@@ -1279,99 +1566,52 @@
                     for (const key in rodsByModel) {
                         const rodInfo = rodsByModel[key];
                         const modelData = allModels[rodInfo.type].models[rodInfo.model];
-                        lines.push({
+                        materials.push({
                             name: `Parallamps INGESCO ${rodInfo.model}`,
                             ref: modelData.ref,
                             qty: rodInfo.count,
-                            price: modelData.price,
-                            disc: pararrayosDisc
+                            unit: 'ud'
                         });
                     }
                     
-                    // Afegir accessoris (multiplicats pel nombre de parallamps)
+                    // Afegir accessoris
                     const numRods = lightningRods.length || 1;
                     
-                    lines.push({ ...productCatalog.piezaAdapt, qty: numRods, disc: productCatalog.piezaAdapt[discKey] });
-                    lines.push({ name: mastil.name, ref: mastil.ref, qty: numRods, price: mastil.price, disc: mastil[discKey] });
-                    lines.push({ ...productCatalog.anclaje, qty: numRods * 2, disc: productCatalog.anclaje[discKey] });
-                    lines.push({ name: `Cable coure nu 50mm² (${cableMeters}m x ${numRods * 2} baix.)`, ref: productCatalog.cableCobre.ref, qty: cableMeters * numRods * 2, price: productCatalog.cableCobre.price, disc: productCatalog.cableCobre[discKey] });
-                    lines.push({ ...productCatalog.abrazadera, qty: clampCount * numRods, disc: productCatalog.abrazadera[discKey] });
-                    lines.push({ ...productCatalog.contador, qty: numRods, disc: productCatalog.contador[discKey] });
-                    lines.push({ ...productCatalog.tuboProtec, qty: numRods, disc: productCatalog.tuboProtec[discKey] });
-                    lines.push({ ...productCatalog.senal, qty: numRods, disc: productCatalog.senal[discKey] });
-                    lines.push({ ...productCatalog.arqueta, qty: numRods, disc: productCatalog.arqueta[discKey] });
-                    lines.push({ ...productCatalog.barraEquip, qty: numRods, disc: productCatalog.barraEquip[discKey] });
-                    lines.push({ ...productCatalog.pica, qty: numRods * 3, disc: productCatalog.pica[discKey] });
+                    materials.push({ name: productCatalog.piezaAdapt.name, ref: productCatalog.piezaAdapt.ref, qty: numRods, unit: 'ud' });
+                    materials.push({ name: mastil.name, ref: mastil.ref, qty: numRods, unit: 'ud' });
+                    materials.push({ name: productCatalog.anclaje.name, ref: productCatalog.anclaje.ref, qty: numRods * 2, unit: 'ud' });
+                    materials.push({ name: `Cable coure nu 50mm²`, ref: productCatalog.cableCobre.ref, qty: cableMeters * numRods * 2, unit: 'm' });
+                    materials.push({ name: productCatalog.abrazadera.name, ref: productCatalog.abrazadera.ref, qty: clampCount * numRods, unit: 'ud' });
+                    materials.push({ name: productCatalog.contador.name, ref: productCatalog.contador.ref, qty: numRods, unit: 'ud' });
+                    materials.push({ name: productCatalog.tuboProtec.name, ref: productCatalog.tuboProtec.ref, qty: numRods, unit: 'ud' });
+                    materials.push({ name: productCatalog.senal.name, ref: productCatalog.senal.ref, qty: numRods, unit: 'ud' });
+                    materials.push({ name: productCatalog.arqueta.name, ref: productCatalog.arqueta.ref, qty: numRods, unit: 'ud' });
+                    materials.push({ name: productCatalog.barraEquip.name, ref: productCatalog.barraEquip.ref, qty: numRods, unit: 'ud' });
+                    materials.push({ name: productCatalog.pica.name, ref: productCatalog.pica.ref, qty: numRods * 3, unit: 'ud' });
                     
-                    // Calcular totals
-                    let totalPVP = 0;
-                    let totalNet = 0;
-                    
-                    lines.forEach(line => {
-                        const linePVP = line.price * line.qty;
-                        const lineNet = applyDiscount(line.price, line.disc) * line.qty;
-                        totalPVP += linePVP;
-                        totalNet += lineNet;
-                    });
-                    
-                    // Línies productes
+                    // Línies materials
                     doc.setFont('helvetica', 'normal');
                     doc.setFontSize(8);
                     
-                    lines.forEach((line, i) => {
+                    materials.forEach((mat, i) => {
                         if (i % 2 === 0) {
                             doc.setFillColor(250, 250, 250);
                             doc.rect(15, y - 3, pageWidth - 30, 7, 'F');
                         }
                         
-                        const lineNet = applyDiscount(line.price, line.disc) * line.qty;
-                        
-                        // Truncar nom si és massa llarg
-                        let productName = line.name;
-                        if (productName.length > 45) {
-                            productName = productName.substring(0, 42) + '...';
-                        }
-                        
                         doc.setTextColor(0, 0, 0);
-                        doc.text(productName, 17, y + 1);
-                        doc.text(line.ref, 100, y + 1);
-                        doc.text(line.qty.toString(), 122, y + 1);
-                        doc.text(line.price.toFixed(2) + ' €', 135, y + 1);
-                        doc.text(line.disc, 155, y + 1);
+                        doc.text(mat.name, 17, y + 1);
+                        doc.text(mat.ref, 120, y + 1);
                         doc.setFont('helvetica', 'bold');
-                        doc.text(lineNet.toFixed(2) + ' €', 175, y + 1);
+                        doc.text(`${mat.qty} ${mat.unit}`, 167, y + 1);
                         doc.setFont('helvetica', 'normal');
                         
                         y += 7;
                     });
                     
-                    y += 5;
-                    
-                    // Totals
-                    doc.setDrawColor(46, 134, 171);
-                    doc.setLineWidth(0.5);
-                    doc.line(130, y, pageWidth - 15, y);
-                    
                     y += 8;
-                    doc.setFontSize(9);
-                    doc.text('PVP Total:', 135, y);
-                    doc.text(totalPVP.toFixed(2) + ' €', 175, y);
                     
-                    y += 6;
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(11);
-                    doc.setTextColor(26, 82, 118);
-                    doc.text('TOTAL NET:', 135, y);
-                    doc.text(totalNet.toFixed(2) + ' €', 175, y);
-                    
-                    y += 5;
-                    doc.setFontSize(8);
-                    doc.setFont('helvetica', 'normal');
-                    doc.setTextColor(100, 100, 100);
-                    doc.text('(IVA no inclòs)', 175, y);
-                    
-                    // Protecció interna (opcional)
-                    y += 15;
+                    // Protecció interna
                     doc.setFillColor(46, 134, 171);
                     doc.rect(15, y, pageWidth - 30, 8, 'F');
                     doc.setTextColor(255, 255, 255);
@@ -1380,35 +1620,20 @@
                     doc.text('PROTECCIÓ INTERNA (Recomanada segons RBT ITC-BT-23)', 17, y + 5.5);
                     
                     y += 12;
+                    doc.setFillColor(250, 250, 250);
+                    doc.rect(15, y - 3, pageWidth - 30, 7, 'F');
                     doc.setTextColor(0, 0, 0);
                     doc.setFont('helvetica', 'normal');
                     doc.setFontSize(8);
-                    
-                    const protNet = applyDiscount(productCatalog.protectorTri.price, productCatalog.protectorTri[discKey]);
-                    doc.text(productCatalog.protectorTri.name, 17, y);
-                    doc.text(productCatalog.protectorTri.ref, 100, y);
-                    doc.text('1', 122, y);
-                    doc.text(productCatalog.protectorTri.price.toFixed(2) + ' €', 135, y);
-                    doc.text(productCatalog.protectorTri[discKey], 155, y);
+                    doc.text(productCatalog.protectorTri.name, 17, y + 1);
+                    doc.text(productCatalog.protectorTri.ref, 120, y + 1);
                     doc.setFont('helvetica', 'bold');
-                    doc.text(protNet.toFixed(2) + ' €', 175, y);
+                    doc.text('1 ud', 167, y + 1);
                     
                     // Notes al peu
                     y += 25;
-                    doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(8);
-                    doc.setTextColor(60, 60, 60);
-                    doc.text('Condicions:', 15, y);
-                    y += 5;
-                    doc.setFontSize(7);
-                    doc.text('• Pressupost orientatiu. Els preus poden variar segons disponibilitat i fluctuació del mercat del coure.', 15, y);
-                    y += 4;
-                    doc.text('• Portes pagats per comandes superiors a 1.100€ (península). Consultar altres destinacions.', 15, y);
-                    y += 4;
-                    doc.text('• Validesa de l\'oferta: 7 dies.', 15, y);
-                    
-                    y += 10;
                     doc.setFont('helvetica', 'italic');
+                    doc.setFontSize(7);
                     doc.setTextColor(100, 100, 100);
                     doc.text('Segons normativa UNE 21186:2011, NFC 17-102:2011, IEC 62305 i CTE DB SUA-8.', 15, y);
                     y += 4;
@@ -1416,7 +1641,7 @@
                 }
                 
                 // Descarregar
-                const filePrefix = pdfMode === 'image' ? 'Mapa' : 'Pressupost';
+                const filePrefix = pdfMode === 'image' ? 'Mapa' : 'Materials';
                 const safeRef = clientRef.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
                 doc.save(`${filePrefix}_${safeRef}_${today.replace(/\//g, '-')}.pdf`);
                 
@@ -1835,7 +2060,7 @@
         
         // ============================================
         // INICIALITZACIÓ
-        // ============================================
+          // ============================================
         
         generateTables();
         populateModelSelect();
