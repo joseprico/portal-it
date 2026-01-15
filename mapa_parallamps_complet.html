@@ -694,9 +694,13 @@
         // ============================================
         // INICIALITZAR MAPA
         // ============================================
+        
+        // Usar Canvas renderer per millor compatibilitat amb html2canvas
+        const canvasRenderer = L.canvas({ padding: 0.5 });
+        
         const map = L.map('map', {
-            preferCanvas: false,
-            renderer: L.svg({ padding: 2 })
+            preferCanvas: true,
+            renderer: canvasRenderer
         }).setView([initialLat, initialLng], 17);
         
         const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -899,7 +903,8 @@
                 fillColor: color,
                 fillOpacity: 0.2,
                 radius: radius,
-                weight: 3
+                weight: 3,
+                renderer: canvasRenderer
             }).addTo(map);
             
             const marker = L.marker(latlng, { 
@@ -1474,6 +1479,10 @@
                 
                 // Capturar el mapa
                 const mapElement = document.getElementById('map');
+                
+                // Esperar que el Canvas estigui renderitzat
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
                 const canvas = await html2canvas(mapElement, {
                     useCORS: true,
                     allowTaint: true,
