@@ -552,6 +552,12 @@
         .mat-table .btn-del:hover { background: #c0392b; }
         .mat-table .btn-move { background: #ecf0f1; color: #555; border: none; border-radius: 3px; width: 20px; height: 20px; cursor: pointer; font-size: 0.7em; line-height: 20px; padding: 0; margin: 0 1px; }
         .mat-table .btn-move:hover { background: #2e86ab; color: white; }
+        .mat-table .drag-handle { cursor: grab; color: #aaa; font-size: 1.1em; padding: 2px 4px; user-select: none; display: inline-block; vertical-align: middle; }
+        .mat-table .drag-handle:hover { color: #2e86ab; }
+        .mat-table .drag-handle:active { cursor: grabbing; }
+        .mat-table tr.dragging { opacity: 0.4; background: #e8f4f8 !important; }
+        .mat-table tr.drag-over { border-top: 3px solid #2e86ab !important; }
+        .mat-table tr.drag-over-below { border-bottom: 3px solid #2e86ab !important; }
         .mat-section-header { background: #2e86ab !important; }
         .mat-section-header td { color: white !important; font-weight: 700; font-size: 0.9em; padding: 6px 8px !important; border: none !important; }
         .mat-total-row { background: #1a5276 !important; }
@@ -1397,7 +1403,16 @@
             {ref:"370222",desc:"Protector sobretensiones SLS-PV 1000 V/3Y",pvp:173.8,ds:40,das:5,di:30,dai:5,cat:"Sobretensiones"},
             {ref:"800035",desc:"Cinta plastica anticorrosiva 100mm (L=10m)",pvp:93.1,ds:20,das:0,di:10,dai:0,cat:"Varios"},
             {ref:"800148",desc:"Cinta plastica anticorrosiva 50mm (L=10m)",pvp:36.5,ds:20,das:0,di:10,dai:0,cat:"Varios"},
-            {ref:"250032",desc:"Spray Galvanizador en frio 400ml",pvp:13.1,ds:20,das:0,di:10,dai:0,cat:"Varios"}
+            {ref:"250032",desc:"Spray Galvanizador en frio 400ml",pvp:13.1,ds:20,das:0,di:10,dai:0,cat:"Varios"},
+            // Conductores
+            {ref:"117071",desc:"Cable Cu 35mm²",pvp:0,ds:0,das:0,di:0,dai:0,cat:"Conductores"},
+            {ref:"117072",desc:"Cable Cu 50mm² (metros)",pvp:0,ds:0,das:0,di:0,dai:0,cat:"Conductores"},
+            {ref:"117073",desc:"Cable Cu 70mm²",pvp:0,ds:0,das:0,di:0,dai:0,cat:"Conductores"},
+            {ref:"117074",desc:"Cable Cu 95mm²",pvp:0,ds:0,das:0,di:0,dai:0,cat:"Conductores"},
+            {ref:"117201",desc:"Bobina Cable de Cobre 50mm² (30m)",pvp:0,ds:0,das:0,di:0,dai:0,cat:"Conductores"},
+            {ref:"117123",desc:"Bobina Cable de Cobre 50mm² (50m)",pvp:0,ds:0,das:0,di:0,dai:0,cat:"Conductores"},
+            {ref:"117081",desc:"Conductor Redondo Ø8 Ac. Galv. (Bob. 125m)",pvp:418.1,ds:35,das:0,di:0,dai:0,cat:"Conductores"},
+            {ref:"117082",desc:"Pletina de CuSn 30x2mm (Bob. 50m)",pvp:0,ds:0,das:0,di:0,dai:0,cat:"Conductores"}
         ];
         
         // Categories per al selector
@@ -2995,7 +3010,7 @@
                 const isCustom = m.customD1 !== undefined;
                 const customStyle = isCustom ? 'background:#fef3c7;border-color:#f59e0b;' : '';
                 
-                html += `<tr>`;
+                html += `<tr draggable="true" data-idx="${idx}">`;
                 html += `<td class="col-ref">${m.ref}</td>`;
                 html += `<td class="col-desc">${m.name}</td>`;
                 html += `<td class="col-qty"><input type="number" value="${m.qty}" min="0" onchange="updateMaterialQty(${idx}, this.value)"></td>`;
@@ -3004,7 +3019,7 @@
                 html += `<td class="col-dte"><input type="number" class="dte-input" value="${disc.d1}" min="0" max="100" step="1" onchange="updateMaterialD1(${idx}, this.value)" style="${customStyle}"><span class="dte-sep">+</span><input type="number" class="dte-input" value="${disc.d2}" min="0" max="100" step="1" onchange="updateMaterialD2(${idx}, this.value)" style="${customStyle}"></td>`;
                 html += `<td class="col-pvn">${pvn > 0 ? pvn.toFixed(2) : '-'}</td>`;
                 html += `<td class="col-total">${lineTotal > 0 ? lineTotal.toFixed(2) : '-'}</td>`;
-                html += `<td class="col-act"><button class="btn-move" onclick="moveMaterial(${idx},-1)" title="Subir">▲</button><button class="btn-move" onclick="moveMaterial(${idx},1)" title="Bajar">▼</button> <button class="btn-del" onclick="removeMaterial(${idx})" title="Eliminar">✕</button></td>`;
+                html += `<td class="col-act"><span class="drag-handle" title="Arrastrar para mover">⠿</span> <button class="btn-del" onclick="removeMaterial(${idx})" title="Eliminar">✕</button></td>`;
                 html += `</tr>`;
             });
             
@@ -3013,10 +3028,87 @@
             html += '</tbody></table>';
             container.innerHTML = html;
             
+            // Setup drag-and-drop for material rows
+            initMaterialDragDrop(container);
+            
             // Update footer totals
             const footer = document.getElementById('matFooterTotals');
             const itemCount = editableMaterials.filter(m => !m.isSection && m.qty > 0).length;
             footer.textContent = `${itemCount} líneas · Total PVN: ${grandTotal.toFixed(2)} €`;
+        }
+        
+        let matDragSrcIdx = null;
+        function initMaterialDragDrop(container) {
+            const rows = container.querySelectorAll('tr[draggable="true"]');
+            rows.forEach(row => {
+                // Only allow drag from the handle
+                row.addEventListener('dragstart', function(e) {
+                    const handle = row.querySelector('.drag-handle');
+                    // Check if drag started near the handle (allow anywhere on the row for touch, but prefer handle)
+                    matDragSrcIdx = parseInt(this.dataset.idx);
+                    this.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', matDragSrcIdx);
+                });
+                
+                row.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                    container.querySelectorAll('.drag-over, .drag-over-below').forEach(r => {
+                        r.classList.remove('drag-over', 'drag-over-below');
+                    });
+                    matDragSrcIdx = null;
+                });
+                
+                row.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    const targetIdx = parseInt(this.dataset.idx);
+                    if (isNaN(targetIdx) || targetIdx === matDragSrcIdx) return;
+                    // Don't allow drop on section headers
+                    if (editableMaterials[targetIdx] && editableMaterials[targetIdx].isSection) return;
+                    
+                    // Remove previous highlights
+                    container.querySelectorAll('.drag-over, .drag-over-below').forEach(r => {
+                        r.classList.remove('drag-over', 'drag-over-below');
+                    });
+                    
+                    // Determine if above or below midpoint
+                    const rect = this.getBoundingClientRect();
+                    const midY = rect.top + rect.height / 2;
+                    if (e.clientY < midY) {
+                        this.classList.add('drag-over');
+                    } else {
+                        this.classList.add('drag-over-below');
+                    }
+                });
+                
+                row.addEventListener('dragleave', function() {
+                    this.classList.remove('drag-over', 'drag-over-below');
+                });
+                
+                row.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const fromIdx = matDragSrcIdx;
+                    const toIdx = parseInt(this.dataset.idx);
+                    
+                    if (isNaN(fromIdx) || isNaN(toIdx) || fromIdx === toIdx) return;
+                    if (editableMaterials[fromIdx].isSection || editableMaterials[toIdx].isSection) return;
+                    
+                    // Determine insert position (above or below based on mouse position)
+                    const rect = this.getBoundingClientRect();
+                    const midY = rect.top + rect.height / 2;
+                    let insertIdx = e.clientY < midY ? toIdx : toIdx + 1;
+                    
+                    // Remove the dragged item and insert at new position
+                    const item = editableMaterials.splice(fromIdx, 1)[0];
+                    // Adjust insertIdx if source was before target
+                    if (fromIdx < insertIdx) insertIdx--;
+                    editableMaterials.splice(insertIdx, 0, item);
+                    
+                    renderMaterialsTable();
+                });
+            });
         }
         
         function buildAutoMaterials() {
@@ -3142,13 +3234,11 @@
             if (companyName) nota += ' | Empresa: ' + companyName;
             
             // Construir línies per sp_SOL_ImportarOferta
-            // Format: C1=Comentari TAB C2=Codi TAB C3=DescLliure TAB C4=UOM TAB C5=Qty TAB C6=Regalo TAB C7=Preu TAB C8=Dto1 TAB C9=Dto2
             let itemLines = [];
             let currentSection = '';
             
             editableMaterials.forEach(m => {
                 if (m.isSection) {
-                    // Línia de comentari (secció)
                     currentSection = m.name.replace(/[^\w\s\-áéíóúàèìòùñçü]/gi, '').trim();
                     itemLines.push('COMMENT:' + currentSection);
                     return;
@@ -3159,10 +3249,8 @@
                 const hasRef = m.ref && m.ref !== '';
                 
                 if (hasRef) {
-                    // Línia amb codi article (tipus 'i')
                     itemLines.push('ITEM:' + m.ref + '|' + (m.name || '') + '|UD|' + m.qty + '|' + (m.pvp || 0) + '|' + disc.d1 + '|' + disc.d2);
                 } else {
-                    // Línia de text lliure (tipus 'f')
                     const pvn = calcPVNfromD1D2(m.pvp || 0, disc.d1, disc.d2);
                     itemLines.push('FREE:' + (m.name || '') + '|UD|' + m.qty + '|' + pvn.toFixed(2) + '|0|0');
                 }
@@ -4407,6 +4495,24 @@
                     return;
                 }
                 
+                // Arrossegar bajante (línia sencera)
+                if (hit && hit.type === 'bajante') {
+                    planoDraggingElement = true;
+                    planoSelectedElement = hit;
+                    const b = planoElements.bajantes[hit.index];
+                    planoDragElementOffset = {
+                        x: coords.x,
+                        y: coords.y,
+                        ox1: b.x1, oy1: b.y1,
+                        ox2: b.x2, oy2: b.y2
+                    };
+                    container.style.cursor = 'grabbing';
+                    closePlanoPopup();
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return;
+                }
+                
                 // Si no hi ha element, arrossegar el plànol (pan)
                 planoDragging = true;
                 planoDragStart = {x: e.clientX, y: e.clientY};
@@ -4428,6 +4534,15 @@
                     } else if (planoSelectedElement.type === 'tierra') {
                         planoElements.tierras[planoSelectedElement.index].x = newX;
                         planoElements.tierras[planoSelectedElement.index].y = newY;
+                    } else if (planoSelectedElement.type === 'bajante') {
+                        const off = planoDragElementOffset;
+                        const dx = coords.x - off.x;
+                        const dy = coords.y - off.y;
+                        const b = planoElements.bajantes[planoSelectedElement.index];
+                        b.x1 = off.ox1 + dx;
+                        b.y1 = off.oy1 + dy;
+                        b.x2 = off.ox2 + dx;
+                        b.y2 = off.oy2 + dy;
                     }
                     drawPlano();
                     return;
