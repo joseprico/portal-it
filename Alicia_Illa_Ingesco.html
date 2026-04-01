@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alicia Illa · Ingesco</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --border: rgba(0,56,130,0.1);
+    --blue: #003882;
+    --blue-mid: #0057c8;
+    --blue-light: #e8eef8;
+    --white: #ffffff;
+    --text: #0d1a33;
+    --muted: #7a8aa0;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 110% 0%, rgba(0,56,130,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at -10% 100%, rgba(0,87,200,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: -5%;
+    right: -2%;
+    width: 50vw;
+    height: 110vh;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 800'%3E%3Cpolyline points='180,0 120,280 190,280 80,800' fill='none' stroke='%23003882' stroke-width='1.5' stroke-opacity='0.06'/%3E%3Cpolyline points='205,0 148,250 215,250 115,800' fill='none' stroke='%23003882' stroke-width='0.8' stroke-opacity='0.035'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right center;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow:
+      0 2px 4px rgba(0,56,130,0.04),
+      0 20px 60px rgba(0,56,130,0.10),
+      0 60px 100px rgba(0,0,0,0.06);
+    animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .header {
+    background: var(--blue);
+    padding: 2.2rem 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 60%;
+    height: 200%;
+    background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.04) 50%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.15), rgba(255,255,255,0.4), rgba(255,255,255,0.15));
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: 1.8rem;
+    animation: rise 0.8s 0.1s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  .bolt {
+    width: 20px;
+    height: 20px;
+    color: rgba(255,255,255,0.9);
+    flex-shrink: 0;
+  }
+
+  .company-name {
+    font-family: 'DM Mono', monospace;
+    font-weight: 400;
+    font-size: 0.68rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+  }
+
+  .name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 2.7rem;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    animation: rise 0.8s 0.12s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  .title {
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    font-weight: 300;
+    animation: rise 0.8s 0.16s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  .contacts {
+    padding: 0.5rem 2.5rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s ease;
+    animation: rise 0.8s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  .contact-item:nth-child(1) { animation-delay: 0.22s; }
+  .contact-item:nth-child(2) { animation-delay: 0.27s; }
+  .contact-item:nth-child(3) { animation-delay: 0.32s; }
+  .contact-item:nth-child(4) { animation-delay: 0.37s; }
+  .contact-item:last-child { border-bottom: none; }
+
+  .contact-item:hover { color: var(--blue-mid); padding-left: 4px; }
+  .contact-item:hover .icon-wrap { background: var(--blue); border-color: var(--blue); }
+  .contact-item:hover .icon-wrap svg { color: white; }
+
+  .icon-wrap {
+    width: 34px;
+    height: 34px;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    background: var(--blue-light);
+  }
+
+  .icon-wrap svg {
+    width: 14px;
+    height: 14px;
+    color: var(--blue);
+    transition: color 0.2s;
+  }
+
+  .contact-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 2px;
+    font-weight: 300;
+  }
+
+  .contact-value {
+    font-size: 0.8rem;
+    font-weight: 300;
+    letter-spacing: 0.01em;
+    color: var(--text);
+  }
+
+  .footer {
+    padding: 1.25rem 2.5rem 2rem;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+    animation: rise 0.8s 0.45s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  .save-btn {
+    display: block;
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--blue);
+    border: none;
+    border-radius: 2px;
+    color: #ffffff;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.63rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .save-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+
+  .save-btn:hover::before { transform: translateX(100%); }
+  .save-btn:hover {
+    background: var(--blue-mid);
+    box-shadow: 0 4px 20px rgba(0,56,130,0.25);
+    transform: translateY(-1px);
+  }
+
+  .tagline {
+    margin-top: 0.9rem;
+    font-size: 0.57rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="card">
+
+    <div class="header">
+      <div class="logo-row">
+        <svg class="bolt" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M13 2L4.09 12.97A1 1 0 005 14.5h5.5L10 22l9.91-10.97A1 1 0 0019 9.5h-5.5L13 2z"/>
+        </svg>
+        <span class="company-name">Ingesco</span>
+      </div>
+      <div class="name">Alicia<br>Illa</div>
+      <div class="title">Export Area Manager</div>
+    </div>
+
+    <div class="contacts">
+
+      <a href="tel:+34937360300" class="contact-item">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="contact-label">Oficina</span>
+          <span class="contact-value">(+34) 93 736 03 00</span>
+        </div>
+      </a>
+
+      <a href="tel:+50257743164" class="contact-item">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12.01" y2="18"/>
+          </svg>
+        </div>
+        <div>
+          <span class="contact-label">Mòbil</span>
+          <span class="contact-value">(+502) 577 431 64</span>
+        </div>
+      </a>
+
+      <a href="mailto:alicia.illa@ingesco.com" class="contact-item">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <div>
+          <span class="contact-label">Email</span>
+          <span class="contact-value">alicia.illa@ingesco.com</span>
+        </div>
+      </a>
+
+      <a href="https://www.ingesco.com" target="_blank" rel="noopener" class="contact-item">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="contact-label">Web</span>
+          <span class="contact-value">www.ingesco.com</span>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="footer">
+      <a href="#" class="save-btn" onclick="saveContact(event)">
+        ↓ &nbsp; Guardar contacte
+      </a>
+      <div class="tagline">Lightning Protection Specialists</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function saveContact(e) {
+  e.preventDefault();
+  const vcf = "BEGIN:VCARD\nVERSION:3.0\nFN:Alicia Illa\nN:Illa;Alicia;;;\nORG:Ingesco\nTITLE:Export Area Manager\nTEL;TYPE=WORK,VOICE:+34937360300\nTEL;TYPE=CELL,VOICE:+50257743164\nEMAIL;TYPE=WORK:alicia.illa@ingesco.com\nURL:https://www.ingesco.com\nEND:VCARD";
+  const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Alicia_Illa_Ingesco.vcf';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
